@@ -1,10 +1,9 @@
 let menu_item_template = /*template*/`
-<g @mouseenter="scaleUp()" @mouseleave="scaleDown()" style="cursor: pointer;pointer-events: fill;">
-    <use :href="getRef()" :x="x" :y="y"></use>
-    <text :x="x+200" :y="y+80"
+<g @clicked="clicked()" style="cursor: pointer; pointer-events: fill;" :id="id">
+    <use :href="getRef()" :x="x" :y="y" style="color: transparent;"></use>
+    <text :x="x+160" :y="y+80"
         font-family="Badaboom"
-        font-size="80"
-        :id="id"
+        :font-size="fontSize"
         class="menuTitle">
         {{title}}
   </text>
@@ -38,8 +37,7 @@ MenuItem = {
     },
     data() {
         return {
-            tweenIn: null,
-            tweenOut: null
+            fontSize: 80
         }
     },
     //====================================================================================================================
@@ -53,11 +51,27 @@ MenuItem = {
         //         this.on = Api.isLightOn(l.d.brightness);
         //     }
         // });
+
+      
     },
     //====================================================================================================================
     mounted: function() {
-        this.tweenIn = KUTE.to('#' + this.id, {scale: 1.1}, {duration: 200});
-        this.tweenOut = KUTE.to('#' + this.id, {scale: 1}, {duration: 200});
+        let el = d3.selectAll('#' + this.id);
+        el.on("mouseenter", function(d){
+            d3.select(this).select('text').transition()
+            .duration(200)
+            .attr("font-size", "100");
+
+            d3.select(this).select('use').style("color", "grey");
+        });
+
+        el.on("mouseleave", function(d){
+            d3.select(this).select('text').transition()
+            .duration(200)
+            .attr("font-size", "80");
+
+            d3.select(this).select('use').style("color", "transparent");
+        });
     },
     //====================================================================================================================
     beforeDestroy() {
@@ -69,6 +83,7 @@ MenuItem = {
             return '#' + this.id;
         },
         clicked() {
+            console.log("Clicked!");
             // if (this.enableSelect) {
             //     console.log("Clicked on: " + this.id);
                 
@@ -78,16 +93,6 @@ MenuItem = {
             //         this.selectLight(this.id);
             //     }
             // }
-        },
-        scaleUp() {
-            console.log("Mouse Over");
-            this.tweenOut.stop();
-            this.tweenIn.start();
-        },
-        scaleDown() {
-            console.log("Mouse Leave");
-            this.tweenIn.stop();
-            this.tweenOut.start();
         }
     }
 };

@@ -11,6 +11,10 @@ var menu_view_template = /*template*/`
         The B-Men
   </text>
 
+  <svg x="50" y="400">       
+    <image xlink:href="images/cover.png" width="1000" height="603"  draggable="false" onmousedown="if (event.preventDefault) event.preventDefault()"/>
+  </svg>
+
   <text x="660" y="250"
         font-size="60">
         Le commencement

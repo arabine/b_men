@@ -3,12 +3,43 @@ html, body {
     padding:0; 
     overflow:hidden;
     background-color: #3a885f;
-    font-family: 'Open Sans', sans-serif;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+
+    font-family: "Roboto";
+    font-weight: 400;
+    font-style: normal;
 }
+
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+  }
 
 @font-face {
 	font-family: "Badaboom";
 	src: url('../fonts/badaboom.ttf');
 }
 
-#mainsvg { position:fixed; top:0; left:0; height:100%; width:100% }
+/* Roboto regular */
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../fonts/Roboto-Regular.ttf") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+#mainsvg { 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    height:100%; 
+    width:100%
+}
