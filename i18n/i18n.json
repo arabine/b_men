@@ -1,0 +1,28 @@
+ {
+    "en":
+    {
+      "title": "FELUN System",
+      "welcome": "Welcome to the FELUN System Server application. Please log-in before using and manage your airport lights with a proper access level. Help is available in Home > Manual sub-menu.",
+      "connection": "Connection",
+      "restart": "Restart",
+      "shutdown": "Shutdown",
+      "quit": "Quit",
+      "username": "User name",
+      "password": "Password",
+      "usernotes": "User notes"
+    },
+    "fr":
+    {
+
+        "title": "Système FELUN",
+        "welcome": "Bienvenue sur le Serveur du Système FELUN. Veuillez vous connecter avec un niveau d'accès suffisant pour exploiter les feux. Un manuel utilisateur est disponible dans le sous menu Accueil > Manuel.",
+        "connection": "Connexion",
+        "restart": "Redémarrer",
+        "shutdown": "Éteindre",
+        "quit": "Quitter",
+        "username": "Utilisateur",
+        "password": "Mot de passe",
+        "usernotes": "Notes utilisateur"
+    }
+}
+

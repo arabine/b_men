@@ -1,0 +1,7 @@
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src:  url("../fonts/OpenSans-Light.ttf") format('ttf');
+}
