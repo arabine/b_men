@@ -1,4 +1,7 @@
 var menu_view_template = /*template*/`
+<div>
+<div v-show="!loaded" class="loader"></div>
+
 <svg v-show="loaded" id="mainsvg"  viewBox="0 0 1920 1080">
   <defs>
   </defs>
@@ -35,6 +38,7 @@ var menu_view_template = /*template*/`
 
 
 </svg>
+</div>
 `
 
 MenuView = {

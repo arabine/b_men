@@ -1,3 +1,22 @@
+/**********************************************************************************************************************/
+/* FONTES UTILISEE */
+@font-face {
+	font-family: "Badaboom";
+	src: url('../fonts/badaboom.ttf');
+}
+
+/* Roboto regular */
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../fonts/Roboto-Regular.ttf") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/**********************************************************************************************************************/
+/* PARAMETRES GENERAUX DES TAG ET DES PAGES */
+
 html, body {
     margin:0; 
     padding:0; 
@@ -20,21 +39,8 @@ img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-  }
-
-@font-face {
-	font-family: "Badaboom";
-	src: url('../fonts/badaboom.ttf');
 }
 
-/* Roboto regular */
-
-@font-face {
-    font-family: "Roboto";
-    src: url("../fonts/Roboto-Regular.ttf") format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
 
 #mainsvg { 
     position:fixed; 
@@ -43,3 +49,31 @@ img {
     height:100%; 
     width:100%
 }
+
+/**********************************************************************************************************************/
+/* LOADING CIRCLE */
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    margin:auto;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    position:absolute;
+  }
+  
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
