@@ -1,6 +1,4 @@
 
-// minAccessLevel == 0 means public access
-
 const router = new VueRouter({
   mode: 'hash',
   routes: [
