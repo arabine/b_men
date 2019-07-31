@@ -14,7 +14,7 @@ var menu_view_template = /*template*/`
         The B-Men
   </text>
 
-  <text x="660" y="250"
+  <text x="700" y="250"
         font-size="60">
         Le commencement
   </text>
@@ -42,6 +42,21 @@ var menu_view_template = /*template*/`
 </div>
 `
 
+const historyContents = /*template*/`
+<h1>Histoire du Jeu</h1>
+<p>Vous incarnez une personne extraordinaire disposant d'un gène mutant appelé la mutation B.E.A.U.F 
+(pour Bête Entêté Abruti Unique Forme de vie) qui vous donne un et un seul pouvoir spécial.</p>
+<p>L'histoire se déroule au Camping Municipal des Trois Pins. Une lutte acharnée oppose des B-Men de différentes régions de france
+dans le but d'obetenir le meilleur emplacement : celui à l'ombre près des WC.</p>
+`
+
+const aboutContents = /*template*/`
+<h1>A propos du Jeu</h1>
+<p>Ce jeu a été réalisé dans le cadre de la GameJam Canard PC de 2019 : Make Something Horrible.</p>
+<p>Contact : Anthony (anthony@rabine.fr)</p>
+<p>Le jeu est jouable également en ligne à l'adresse suivante : bmen.d8s.eu</p>
+`
+
 MenuView = {
   name: 'menu-view',
   template: menu_view_template,
@@ -50,10 +65,12 @@ MenuView = {
   data: function () {
     return {
       loaded: false,
+      music: null,
+      popup: null,
       menuItems: [
-        { title: 'Jouer', id:'play', file:'images/menu_1.svg', link:'', x: 0, y: 0 },
-        { title: 'Histoire', id: 'history', file:'images/menu_2.svg', link:'', x: 0, y: 120 },
-        { title: 'A propos', id: 'about', file:'images/menu_3.svg', link:'', x: 0, y: 240 }
+        { title: 'Jouer', id:'play', file:'images/menu_1.svg', x: 0, y: 0 },
+        { title: 'Histoire', id: 'history', file:'images/menu_2.svg', x: 0, y: 120 },
+        { title: 'A propos', id: 'about', file:'images/menu_3.svg', x: 0, y: 240 }
       //  { title: 'Quitter', file:'menu_4.svg', link:'' }
       ]
     }
@@ -62,9 +79,15 @@ MenuView = {
     
   },
   //====================================================================================================================
+  beforeDestroy() {
+    this.$eventHub.$off('menuClicked');
+    this.music.stop();
+  },
+  //====================================================================================================================
   mounted: function() {
 
     console.log('Mounted view MenuView');
+    this.createPopup();  
 
     let imageFiles = [];
 
@@ -78,12 +101,21 @@ MenuView = {
         for (let i = 0; i < list.length; i++) {
           this.createDef(list[i], this.menuItems[i].id);
         }
-        this.loaded = true;
+
+        this.music = new Howl({
+          src: ['sounds/holy.ogg'],
+          autoplay: true,
+          loop: true,
+        });
+          // Clear listener after first call.
+          this.music.once('load', () => {
+          this.loaded = true;
+        });
+        
     })
     .catch(function(error) {
       console.log("Promise get files error: " + error);
     });
-
 
   },
   //====================================================================================================================
@@ -95,6 +127,34 @@ MenuView = {
       d3.select(node).attr("id", id_name);
       g.node().appendChild(node);
     },
+    createPopup() {
+
+      // instanciate new modal
+      this.popup = new tingle.modal({
+        footer: true,
+        stickyFooter: true,
+        closeMethods: ['button'],
+        closeLabel: "Close"
+      });
+
+      // add a button
+      this.popup.addFooterBtn('Close', 'tingle-btn tingle-btn--default tingle-btn--pull-right', () => {
+        // here goes some logic
+        this.popup.close();
+      });
+
+      this.$eventHub.$on('menuClicked', id => {
+        if (id == 'history') {
+          // set content
+          this.popup.setContent(historyContents);
+        } else if (id == 'about') {
+          this.popup.setContent(aboutContents);
+        }
+
+        this.popup.open();
+      });
+
+    }
 
    }
 };

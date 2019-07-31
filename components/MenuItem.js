@@ -1,6 +1,6 @@
 let menu_item_template = /*template*/`
-<g @clicked="clicked()" style="cursor: pointer; pointer-events: fill;" :id="id">
-    <use :href="getRef()" :x="x" :y="y" style="color: transparent;"></use>
+<g @click="clicked()" style="cursor: pointer; pointer-events: fill;" @mouseenter="scaleUp($event)" @mouseleave="scaleDown($event)">
+    <use :href="getRef()" :x="x" :y="y" width="600"  height="80" style="color: transparent;"></use>
     <text :x="x+160" :y="y+80"
         font-family="Badaboom"
         :font-size="fontSize"
@@ -29,10 +29,6 @@ MenuItem = {
         id: {
             type: String,
             default: "default"
-        },
-        link: {
-            type: String,
-            default: "default"
         }
     },
     data() {
@@ -56,22 +52,6 @@ MenuItem = {
     },
     //====================================================================================================================
     mounted: function() {
-        let el = d3.selectAll('#' + this.id);
-        el.on("mouseenter", function(d){
-            d3.select(this).select('text').transition()
-            .duration(200)
-            .attr("font-size", "100");
-
-            d3.select(this).select('use').style("color", "grey");
-        });
-
-        el.on("mouseleave", function(d){
-            d3.select(this).select('text').transition()
-            .duration(200)
-            .attr("font-size", "80");
-
-            d3.select(this).select('use').style("color", "transparent");
-        });
     },
     //====================================================================================================================
     beforeDestroy() {
@@ -82,17 +62,22 @@ MenuItem = {
         getRef() {
             return '#' + this.id;
         },
+        scaleUp(event) {
+            d3.select(event.target).select('text').transition()
+            .duration(200)
+            .attr("font-size", "100");
+
+            d3.select(event.target).select('use').style("color", "grey");
+        },
+        scaleDown(event) {
+            d3.select(event.target).select('text').transition()
+            .duration(200)
+            .attr("font-size", "80");
+
+            d3.select(event.target).select('use').style("color", "transparent");
+        },
         clicked() {
-            console.log("Clicked!");
-            // if (this.enableSelect) {
-            //     console.log("Clicked on: " + this.id);
-                
-            //     if (this.select) {
-            //         this.deselectLight(this.id);
-            //     } else {
-            //         this.selectLight(this.id);
-            //     }
-            // }
+            this.$eventHub.$emit('menuClicked', this.id);
         }
     }
 };

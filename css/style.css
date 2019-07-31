@@ -1,8 +1,17 @@
 /**********************************************************************************************************************/
 /* FONTES UTILISEE */
+
+/* Pour les titres, style comics */
 @font-face {
 	font-family: "Badaboom";
 	src: url('../fonts/badaboom.ttf');
+}
+
+/* Pour les textes, style comics */
+
+@font-face {
+	font-family: "VTC";
+	src: url('../fonts/vtc_letterer_pro.ttf');
 }
 
 /* Roboto regular */
@@ -13,6 +22,8 @@
     font-weight: 400;
     font-style: normal;
 }
+
+
 
 /**********************************************************************************************************************/
 /* PARAMETRES GENERAUX DES TAG ET DES PAGES */
@@ -28,8 +39,7 @@ html, body {
     -o-user-select: none;
     user-select: none;
 
-    font-family: "Roboto";
-    font-weight: 400;
+    font-family: "VTC";
     font-style: normal;
 }
 
