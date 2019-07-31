@@ -51,6 +51,10 @@ img {
     user-drag: none;
 }
 
+p {
+  font-size: 24px;
+}
+
 
 #mainsvg { 
     position:fixed; 

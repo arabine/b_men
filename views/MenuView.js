@@ -31,8 +31,7 @@ var menu_view_template = /*template*/`
         :title="item.title"
         :x="item.x" 
         :y="item.y" 
-        :id="item.id"
-        :link="item.link">
+        :id="item.id">
       </MenuItem>
    </template>
   </svg>
@@ -75,8 +74,13 @@ MenuView = {
       ]
     }
   },
+  //====================================================================================================================
   computed: {
     
+  },
+  //====================================================================================================================
+  deactivated: function () {
+    this.music.stop();
   },
   //====================================================================================================================
   beforeDestroy() {
@@ -103,7 +107,7 @@ MenuView = {
         }
 
         this.music = new Howl({
-          src: ['sounds/holy.ogg'],
+          src: ['sounds/holy.webm'],
           autoplay: true,
           loop: true,
         });
@@ -147,11 +151,13 @@ MenuView = {
         if (id == 'history') {
           // set content
           this.popup.setContent(historyContents);
+          this.popup.open();
         } else if (id == 'about') {
           this.popup.setContent(aboutContents);
+          this.popup.open();
+        } else if (id == 'play') {
+          this.$router.push({ name: 'game' });
         }
-
-        this.popup.open();
       });
 
     }

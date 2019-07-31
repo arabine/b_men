@@ -3,6 +3,7 @@ const router = new VueRouter({
   mode: 'hash',
   routes: [
     { path: '/', name: 'menu', meta: { }, component: MenuView   },
+    { path: '/game', name: 'game', meta: { }, component: GameView   },
     { path: '*', redirect: '/'}
   ]
 });
