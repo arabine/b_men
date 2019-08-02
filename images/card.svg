@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   viewBox="0 0 100 153.0303"
+   height="153.0303"
+   width="100"
+   id="svg7">
+  <metadata
+     id="metadata12">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10" />
+  <g
+     transform="matrix(3.7795276,0,0,3.7795276,1450.4612,47.810953)"
+     id="layer1">
+    <g
+       style="fill:#fffffd;fill-opacity:1"
+       id="g850">
+      <rect
+         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.40088382;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect815"
+         width="26.057449"
+         height="40.088383"
+         x="-383.56741"
+         y="-12.449539"
+         ry="1.2857285" />
+      <rect
+         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.25827864;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect815-3"
+         width="23.55422"
+         height="18.408638"
+         x="-382.3158"
+         y="-11.459431"
+         ry="0.59040821" />
+      <rect
+         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.25503752;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect815-3-1"
+         width="23.561262"
+         height="17.944155"
+         x="-382.31931"
+         y="8.1318092"
+         ry="0.57551122" />
+    </g>
+  </g>
+</svg>

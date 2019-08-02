@@ -30,6 +30,13 @@ var game_view_template = /*template*/`
     color="red">
   </PlayerIcon>
 
+  
+    <Card v-bind:x="550+0" v-bind:y="800" v-bind:id="0" class="card"></Card>
+    <Card v-bind:x="550+150"  v-bind:y="800" v-bind:id="1" class="card"></Card>
+    <Card v-bind:x="550+300"  v-bind:y="800" v-bind:id="2" class="card"></Card>
+    <Card v-bind:x="550+450"  v-bind:y="800" v-bind:id="3" class="card"></Card>
+    <Card v-bind:x="550+600"  v-bind:y="800" v-bind:id="4" class="card"></Card>
+
 </svg>
 </div>
 `
@@ -37,7 +44,7 @@ var game_view_template = /*template*/`
 GameView = {
   name: 'game-view',
   template: game_view_template,
-  components: { MenuItem, PlayerIcon },
+  components: { MenuItem, PlayerIcon, Card },
   //====================================================================================================================
   data: function () {
     return {
@@ -62,6 +69,21 @@ GameView = {
         this.$router.push({ name: 'menu' });
       }
     });
+
+    let deltaX, deltaY;
+    let dragHandler = d3.drag()
+    .on("start", function () {
+      let current = d3.select(this);
+      deltaX = current.attr("x") - d3.event.x;
+      deltaY = current.attr("y") - d3.event.y;
+    })
+    .on("drag", function () {
+        d3.select(this)
+            .attr("x", d3.event.x + deltaX)
+            .attr("y", d3.event.y + deltaY);
+    });
+
+    dragHandler(d3.selectAll(".card"));
 
 
     let imageFiles = [ ];
