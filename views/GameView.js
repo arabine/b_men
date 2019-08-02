@@ -15,18 +15,29 @@ var game_view_template = /*template*/`
         id="menu_1">
   </MenuItem>
 
-  <use href="#background" x="680" y="200" />
-  <use href="#trash" x="20" y="200" />
+  <use href="#background" x="500" y="50" />
+  <use href="#trash" x="50" y="300" />
+
+  <PlayerIcon 
+    x="100" 
+    y="800"
+    color="blue">
+  </PlayerIcon>
+
+  <PlayerIcon 
+    x="1400" 
+    y="800"
+    color="red">
+  </PlayerIcon>
 
 </svg>
 </div>
 `
 
-
 GameView = {
   name: 'game-view',
   template: game_view_template,
-  components: { MenuItem },
+  components: { MenuItem, PlayerIcon },
   //====================================================================================================================
   data: function () {
     return {
@@ -39,20 +50,26 @@ GameView = {
   },
   //====================================================================================================================
   beforeDestroy() {
- //   this.$eventHub.$off('menuClicked');
-
+    this.$eventHub.$off('menuClicked');
   },
   //====================================================================================================================
   mounted: function() {
 
     console.log('Mounted view GameView');
 
+    this.$eventHub.$on('menuClicked', id => {
+      if (id == 'menu_1') {
+        this.$router.push({ name: 'menu' });
+      }
+    });
+
+
     let imageFiles = [ ];
 
     for (let i = 0; i < this.images.length; i++) {
       imageFiles.push(d3.xml(this.images[i]));
     }
-
+    
     // We must wait for all data to be fetched before compute various sizes
     Promise.all(imageFiles).then((list) =>
     {
@@ -61,10 +78,9 @@ GameView = {
           let filenameFull =  this.images[i].replace(/^.*[\\\/]/, '');
           let filenameOnly = filenameFull.replace(/\.[^/.]+$/, "");
 
-          console.log('filenameFull ' + filenameFull + ' filenameOnly ' + filenameOnly);
+        //  console.log('filenameFull ' + filenameFull + ' filenameOnly ' + filenameOnly);
           this.createDef(list[i], filenameOnly);
         }
-
         this.loaded = true;
         
     })

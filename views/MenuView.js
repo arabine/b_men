@@ -79,10 +79,6 @@ MenuView = {
     
   },
   //====================================================================================================================
-  deactivated: function () {
-    this.music.stop();
-  },
-  //====================================================================================================================
   beforeDestroy() {
     this.$eventHub.$off('menuClicked');
     this.music.stop();
@@ -111,10 +107,8 @@ MenuView = {
           autoplay: true,
           loop: true,
         });
-          // Clear listener after first call.
-          this.music.once('load', () => {
-          this.loaded = true;
-        });
+        
+        this.loaded = true;
         
     })
     .catch(function(error) {

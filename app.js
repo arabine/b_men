@@ -9,11 +9,7 @@ const router = new VueRouter({
 });
 
 var app_template = /*template*/`
-<transition>
-  <keep-alive>
-    <router-view></router-view>
-  </keep-alive>
-</transition>
+<router-view></router-view>
 `
 
 async function loadEverything() {
