@@ -1,0 +1,16 @@
+{
+  "name": "felun",
+  "version": "1.0.0",
+  "description": "Delivery script",
+  "main": "api.js",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-remove-logging": "^1.2.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify-es": "^1.0.4"
+  },
+  "author": "Alpha-Airport",
+  "license": "ISC"
+}
