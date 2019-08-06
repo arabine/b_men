@@ -1,10 +1,7 @@
 #!/bin/bash
 
-cd www
-gulp felun-lib
-gulp felun-css
-gulp static-files
-cd ..
+gulp bmen-lib
+gulp bmen-css
 
-perl ./scripts/embed.pl www/dist/ www/images www/i18n www/fonts www/index.html www/favicon.ico > src/embedded_files.c
+perl ./embed.pl dist images i18n fonts sounds index.html favicon.ico > src/embedded_files.c
 

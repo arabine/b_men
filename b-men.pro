@@ -4,10 +4,7 @@ QT += webengine
 
 CONFIG += icl_database icl_zip
 
-
-
-VPATH += src
-INCLUDEPATH += src
+TARGET = bmen
 
 # ------------------------------------------------------------------------------
 # OUTPUT DIRECTORIES
@@ -60,6 +57,12 @@ include($$ICL_DIR/icl.pri)
 # ------------------------------------------------------------------------------
 # APPLICATION FILES
 # ------------------------------------------------------------------------------
-SOURCES += main.cpp
+VPATH += src
+INCLUDEPATH += src
+
+
+SOURCES += main.cpp BMen.cpp embedded_files.c
 
 RESOURCES += qml.qrc
+
+HEADERS += BMen.h

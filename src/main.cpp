@@ -52,17 +52,40 @@
 #include <QQmlApplicationEngine>
 #include <qtwebengineglobal.h>
 
+#include "HttpFileServer.h"
+#include "Util.h"
+#include "BMen.h"
+#include "Log.h"
+
 int main(int argc, char *argv[])
 {
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
-
- //   qputenv("QT_VIRTUALKEYBOARD_STYLE", "retro");
-
-    QCoreApplication::setOrganizationName("QtExamples");
+    QCoreApplication::setOrganizationName("d8s");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     QtWebEngine::initialize();
+
+
+    tcp::TcpSocket::Initialize();
+    std::srand(static_cast<std::uint32_t>(time(nullptr)));
+
+
+    BMen bmen;
+
+
+    if (bmen.Initialize())
+    {
+        tcp::TcpServer tcpServer(bmen);
+        if (tcpServer.Start(100, true, 8081, 8083))
+        {
+            bmen.Start();
+        }
+        else
+        {
+            TLogError("[TCP] failure to start server, maybe TCP ports are not free.");
+        }
+        tcpServer.Stop();
+    }
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

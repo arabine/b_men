@@ -1,2 +1,8 @@
 
 build-bmen/
+
+node_modules/
+
+src/embedded_files\.c
+
+dist/
