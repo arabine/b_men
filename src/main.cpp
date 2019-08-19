@@ -48,22 +48,58 @@
 **
 ****************************************************************************/
 
+#ifdef DESKTOP_APP
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <qtwebengineglobal.h>
+#endif
 
 #include "HttpFileServer.h"
 #include "Util.h"
 #include "BMen.h"
 #include "Log.h"
 
+class Logger : public Observer<Log::Infos>
+{
+public:
+    virtual ~Logger();
+    void Update(const Log::Infos &infos);
+};
+
+
+Logger::~Logger()
+{
+
+}
+
+void Logger::Update(const Log::Infos &infos)
+{
+    std::cout << infos.ToString() << std::endl;
+}
+
+
 int main(int argc, char *argv[])
 {
+
+#ifdef DESKTOP_APP
     QCoreApplication::setOrganizationName("d8s");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     QtWebEngine::initialize();
+#else
+    (void) argc;
+    (void) argv;
+#endif
+    Logger logger;
+
+    Log::EnableLog(true);
+    Log::SetLogPath("logs");
+    Log::SetLogFileName("log_" + Util::CurrentDateTime("%Y%m%d%H%M%S") + ".log");
+    Log::RegisterListener(logger);
+
+    TLogInfo("B-Men is starting");
 
 
     tcp::TcpSocket::Initialize();
@@ -71,25 +107,29 @@ int main(int argc, char *argv[])
 
 
     BMen bmen;
-
+    tcp::TcpServer tcpServer(bmen);
 
     if (bmen.Initialize())
     {
-        tcp::TcpServer tcpServer(bmen);
         if (tcpServer.Start(100, true, 8081, 8083))
         {
             bmen.Start();
         }
-        else
-        {
-            TLogError("[TCP] failure to start server, maybe TCP ports are not free.");
-        }
-        tcpServer.Stop();
     }
 
+#ifdef DESKTOP_APP
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
+
+#else
+    bool loop = true;
+    while(loop)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+    return 0;
+#endif
 }
 

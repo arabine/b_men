@@ -5,11 +5,11 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   version="1.1"
-   viewBox="0 0 100 153.0303"
-   height="153.0303"
+   id="svg7"
    width="100"
-   id="svg7">
+   height="153.0303"
+   viewBox="0 0 100 153.0303"
+   version="1.1">
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -24,36 +24,44 @@
   </metadata>
   <defs
      id="defs10" />
-  <g
-     transform="matrix(3.7795276,0,0,3.7795276,1450.4612,47.810953)"
-     id="layer1">
-    <g
-       style="fill:#fffffd;fill-opacity:1"
-       id="g850">
-      <rect
-         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.40088382;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         id="rect815"
-         width="26.057449"
-         height="40.088383"
-         x="-383.56741"
-         y="-12.449539"
-         ry="1.2857285" />
-      <rect
-         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.25827864;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         id="rect815-3"
-         width="23.55422"
-         height="18.408638"
-         x="-382.3158"
-         y="-11.459431"
-         ry="0.59040821" />
-      <rect
-         style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.25503752;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         id="rect815-3-1"
-         width="23.561262"
-         height="17.944155"
-         x="-382.31931"
-         y="8.1318092"
-         ry="0.57551122" />
-    </g>
-  </g>
+  <rect
+     ry="4.859446"
+     y="0.75757605"
+     x="0.75757486"
+     height="151.51515"
+     width="98.484848"
+     id="rect815"
+     style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:1.5151515;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <rect
+     ry="2.2314641"
+     y="18.499718"
+     x="5.4880857"
+     height="69.575958"
+     width="89.023827"
+     id="rect815-3"
+     style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.97617126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <rect
+     ry="1.7438478"
+     y="91.993469"
+     x="5.4747801"
+     height="54.372311"
+     width="89.050438"
+     id="rect815-3-1"
+     style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.8630783;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <rect
+     ry="1.4388462"
+     y="5.3486223"
+     x="5.2239523"
+     height="9.4813061"
+     width="89.552094"
+     id="rect815-3-1-5"
+     style="opacity:1;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:0.36142254;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <path
+     d="m 97.283455,137.28648 a 10.773434,10.773434 0 0 1 -9.225252,12.11288 10.773434,10.773434 0 0 1 -12.125054,-9.20924 10.773434,10.773434 0 0 1 9.193216,-12.13721 10.773434,10.773434 0 0 1 12.149344,9.17717"
+     id="path4548"
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.44904202;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <path
+     d="m 23.958553,137.28648 a 10.773434,10.773434 0 0 1 -9.225252,12.11288 10.773434,10.773434 0 0 1 -12.1250545,-9.20924 10.773434,10.773434 0 0 1 9.1932155,-12.13721 10.773434,10.773434 0 0 1 12.149344,9.17717"
+     id="path4548-4"
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.44904202;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
 </svg>

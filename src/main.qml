@@ -57,8 +57,17 @@ Window {
     height: (width*9)/16
     visible: true
 
+
+
     WebEngineView {
+        id: webView
         anchors.fill: parent
         url: "http://127.0.0.1:8081"
+
+
+     //   settings.developerExtrasEnabled : true;
+//        onJavaScriptConsoleMessage: {
+//            console.log("JS: ")
+//        }
     }
 }

@@ -665,7 +665,8 @@ my %MimeTypes = (
 "avi" , "video/x-msvideo",
 "movie" , "video/x-sgi-movie",
 "ice" , "x-conference/x-cooltalk",
-"woff2", "application/font-woff2"
+"woff2", "application/font-woff2",
+"ttf", "application/octet-stream",
 );
 
 

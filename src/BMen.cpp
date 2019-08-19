@@ -2,12 +2,18 @@
 #include "Util.h"
 #include "Log.h"
 
+
 extern "C" {
 const char *find_embedded_file(const char *name, size_t *size, const char **mime);
 }
 
 BMen::BMen()
     : HttpFileServer ("")
+{
+
+}
+
+BMen::~BMen()
 {
 
 }
@@ -28,7 +34,7 @@ bool BMen::FindEmbeddedFile(const tcp::Conn &conn, const HttpRequest &request)
     size_t size = 0;
     const char *mime;
 
-    std::string virtualFilePath = "/" + request.query;
+    std::string virtualFilePath = request.query;
 
     // Patch here to redirect to index.html
     if (virtualFilePath == "/")
@@ -40,7 +46,7 @@ bool BMen::FindEmbeddedFile(const tcp::Conn &conn, const HttpRequest &request)
 
     if (fileContents != nullptr)
     {
-        TLogInfo("[FELUN] Serving embedded file: " + request.query);
+        TLogInfo("[FELUN] Serving embedded file: " + virtualFilePath);
 
         std::stringstream ss;
         std::string data(fileContents, size);
@@ -52,6 +58,10 @@ bool BMen::FindEmbeddedFile(const tcp::Conn &conn, const HttpRequest &request)
 
         tcp::TcpSocket::SendToSocket(ss.str(), conn.peer);
         continueProcess = false;
+    }
+    else
+    {
+        TLogError("Cannt find embedded file: " + virtualFilePath);
     }
 
     return continueProcess;

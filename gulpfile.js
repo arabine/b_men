@@ -30,7 +30,7 @@ gulp.task('bmen-lib', function() {
 
 gulp.task('bmen-css', function() {
   return gulp.src([
-          'css/style.css',
+          'style.css',
           ])
     .pipe(minifyCSS())
     .pipe(concat('style.min.css'))

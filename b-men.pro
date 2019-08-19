@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += webengine
+CONFIG += c++11 console
 
 CONFIG += icl_database icl_zip
 
@@ -19,6 +19,11 @@ CONFIG(release, debug|release) {
 release:    DESTDIR = $$BASE_DIR/build-bmen/release
 }
 
+CONFIG(desktop, desktop) {
+QT += webengine
+DEFINES += DESKTOP_APP
+}
+
 UI_DIR          = $$DESTDIR/ui
 UI_HEADERS_DIR  = $$DESTDIR/include
 UI_SOURCES_DIR  = $$DESTDIR/src
@@ -29,7 +34,7 @@ MOC_DIR         = $$DESTDIR/moc
 # ------------------------------------------------------------------------------
 # PLATFORM SPECIFIC COMPILER
 # ------------------------------------------------------------------------------
-windows {
+win32 {
     DEFINES += USE_WINDOWS_OS
 
     *-g++* {
@@ -41,10 +46,14 @@ windows {
     *-msvc* {
         # MSVC
         QMAKE_LIBS += ws2_32.lib psapi.lib setupapi.lib cfgmgr32.lib advapi32.lib
+     #   QMAKE_CXXFLAGS += /SUBSYSTEM:WINDOWS
     }
 
-} else {
+}
+
+linux {
     DEFINES += USE_UNIX_OS
+    DEFINES += USE_LINUX_OS
     LIBS += -ldl -lpthread
 }
 

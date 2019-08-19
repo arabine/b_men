@@ -8,6 +8,7 @@ class BMen : public HttpFileServer
 {
 public:
     BMen();
+    ~BMen();
 
     bool Initialize();
     void Start();

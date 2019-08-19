@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+let trash_template = /*template*/`
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -12,18 +12,6 @@
    width="256">
   <defs
      id="defs4" />
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
   <g
      transform="translate(0,-796.36219)"
      id="layer1">
@@ -103,3 +91,34 @@
     </g>
   </g>
 </svg>
+`;
+
+Trash = {
+    name: 'trash',
+    template: trash_template,
+    data() {
+        return {
+
+        }
+    },
+    //====================================================================================================================
+    computed: {
+
+    },
+    //====================================================================================================================
+    created() {
+
+    },
+    //====================================================================================================================
+    mounted: function() {
+        
+    },
+    //====================================================================================================================
+    beforeDestroy() {
+    },
+    //====================================================================================================================
+    methods: {
+
+    }
+};
+

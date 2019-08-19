@@ -15,27 +15,43 @@ var game_view_template = /*template*/`
         id="menu_1">
   </MenuItem>
 
-  <use href="#background" x="500" y="50" />
-  <use href="#trash" x="50" y="300" />
+  <MenuItem 
+        title="Aide"
+        v-bind:x="10" 
+        v-bind:y="120" 
+        id="menu_2">
+  </MenuItem>
+
+  <use href="#background" x="700" y="20" />
+  <Trash
+    x="200" 
+    y="400"
+    class="droppable"
+  >
+  </Trash>
 
   <PlayerIcon 
-    x="100" 
+    x="20" 
     y="800"
-    color="blue">
+    color="blue"
+    class="droppable"
+  >
   </PlayerIcon>
 
   <PlayerIcon 
-    x="1400" 
+    x="1500" 
     y="800"
-    color="red">
+    color="red"
+    class="droppable"
+  >
   </PlayerIcon>
 
   
-    <Card v-bind:x="550+0" v-bind:y="800" v-bind:id="0" class="card"></Card>
-    <Card v-bind:x="550+150"  v-bind:y="800" v-bind:id="1" class="card"></Card>
-    <Card v-bind:x="550+300"  v-bind:y="800" v-bind:id="2" class="card"></Card>
-    <Card v-bind:x="550+450"  v-bind:y="800" v-bind:id="3" class="card"></Card>
-    <Card v-bind:x="550+600"  v-bind:y="800" v-bind:id="4" class="card"></Card>
+    <Card v-bind:x="450+0" v-bind:y="750" v-bind:id="0" class="card"></Card>
+    <Card v-bind:x="450+210"  v-bind:y="750" v-bind:id="1" class="card"></Card>
+    <Card v-bind:x="450+420"  v-bind:y="750" v-bind:id="2" class="card"></Card>
+    <Card v-bind:x="450+630"  v-bind:y="750" v-bind:id="3" class="card"></Card>
+    <Card v-bind:x="450+840"  v-bind:y="750" v-bind:id="4" class="card"></Card>
 
 </svg>
 </div>
@@ -44,12 +60,13 @@ var game_view_template = /*template*/`
 GameView = {
   name: 'game-view',
   template: game_view_template,
-  components: { MenuItem, PlayerIcon, Card },
+  components: { MenuItem, PlayerIcon, Card, Trash },
   //====================================================================================================================
   data: function () {
     return {
       loaded: false,
-      images: [ 'images/background.svg', 'images/trash.svg', 'images/menu_1.svg' ]
+      initialized: false,
+      images: [ 'images/background.svg', 'images/menu_1.svg', 'images/menu_2.svg' ]
     }
   },
   computed: {
@@ -70,17 +87,31 @@ GameView = {
       }
     });
 
+    let app = this;
+
+    let savedX, savedY;
     let deltaX, deltaY;
     let dragHandler = d3.drag()
     .on("start", function () {
       let current = d3.select(this);
+      savedX = current.attr("x");
+      savedY = current.attr("y");
+
       deltaX = current.attr("x") - d3.event.x;
       deltaY = current.attr("y") - d3.event.y;
+
+      current.raise();
     })
     .on("drag", function () {
         d3.select(this)
             .attr("x", d3.event.x + deltaX)
             .attr("y", d3.event.y + deltaY);
+        app.isSelected(d3.event.x, d3.event.y);
+    })
+    .on("end", function () {
+      d3.select(this)
+          .attr("x", savedX)
+          .attr("y", savedY);
     });
 
     dragHandler(d3.selectAll(".card"));
@@ -104,7 +135,20 @@ GameView = {
           this.createDef(list[i], filenameOnly);
         }
         this.loaded = true;
-        
+        this.$nextTick(() => {
+          d3.selectAll(".droppable").each(function(d,i) {
+            let rect = d3.select(this);
+            d3.select('#mainsvg')
+              .append('rect')
+              .attr('x', rect.attr('x'))
+              .attr('y', rect.attr('y'))
+              .attr('width', rect.attr('width'))
+              .attr('height', rect.attr('height'))
+              .attr('class', 'drop-area')
+              .attr('data-state', '');
+          });
+        });
+
     })
     .catch(function(error) {
       console.log("Promise get files error: " + error);
@@ -112,13 +156,33 @@ GameView = {
   },
   //====================================================================================================================
   methods: {
-    createDef: function(xml, id_name)
-    {
-      var g = d3.select('#mainsvg defs');
-      var node = document.importNode(xml.documentElement, true);
+    createDef: function(xml, id_name) {
+      let g = d3.select('#mainsvg defs');
+      let node = document.importNode(xml.documentElement, true);
       d3.select(node).attr("id", id_name);
       g.node().appendChild(node);
     },
+    isSelected: function(x, y) {
+
+      d3.selectAll(".drop-area").each(function(d,i) {
+        let rect = d3.select(this);
+        let xmin = parseInt(rect.attr('x'));
+        let ymin = parseInt(rect.attr('y'));
+        let xmax = xmin + parseInt(rect.attr('width'));
+        let ymax = ymin + parseInt(rect.attr('height'));
+       
+        if ((x >= xmin) && (x < xmax) && (y >= ymin) && (y < ymax)) {
+          console.log("poubelle !!");
+          d3.select(this).attr('data-state', 'ok');
+        } else {
+          d3.select(this).attr('data-state', '');
+        } 
+
+      });
+
+
+    }
+
     
 
   }
