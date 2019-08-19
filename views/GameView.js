@@ -172,15 +172,12 @@ GameView = {
         let ymax = ymin + parseInt(rect.attr('height'));
        
         if ((x >= xmin) && (x < xmax) && (y >= ymin) && (y < ymax)) {
-          console.log("poubelle !!");
           d3.select(this).attr('data-state', 'ok');
         } else {
           d3.select(this).attr('data-state', '');
         } 
 
       });
-
-
     }
 
     

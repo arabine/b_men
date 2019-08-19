@@ -91,12 +91,12 @@ p {
   100% { transform: rotate(360deg); }
 }
 
-
+/**********************************************************************************************************************/
+/* DROP ZONES */
 .drop-area {
   fill: transparent;
   stroke-width:0;
 }
-
 
 .drop-area[data-state='ok'] {
   fill:rgba(255,255,255,0.5);

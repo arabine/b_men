@@ -42,11 +42,16 @@ bool BMen::FindEmbeddedFile(const tcp::Conn &conn, const HttpRequest &request)
         virtualFilePath = "/index.html";
     }
 
+    if (virtualFilePath == "/js/vuex.min.js")
+    {
+        TLogInfo("PAF");
+    }
+
     const char *fileContents = find_embedded_file(virtualFilePath.c_str(), &size, &mime);
 
     if (fileContents != nullptr)
     {
-        TLogInfo("[FELUN] Serving embedded file: " + virtualFilePath);
+    //    TLogInfo("[B-MEN] Serving embedded file: " + virtualFilePath);
 
         std::stringstream ss;
         std::string data(fileContents, size);
@@ -83,6 +88,8 @@ bool BMen::ServeRESTApi(const tcp::Conn &conn, const HttpRequest &request)
 
 bool BMen::ReadDataPath(const tcp::Conn &conn, const HttpRequest &request)
 {
+     TLogInfo("PAF: " + request.query);
+
     bool continueProcess = FindEmbeddedFile(conn, request);
 
     if (continueProcess)

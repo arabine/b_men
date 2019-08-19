@@ -540,7 +540,7 @@ my %MimeTypes = (
 "fst" , "image/vnd.fst",
 "mmr" , "image/vnd.fujixerox.edmics-mmr",
 "rlc" , "image/vnd.fujixerox.edmics-rlc",
-"ico" , "image/vnd.microsoft.icon",
+"ico" , "image/x-icon",
 "mdi" , "image/vnd.ms-modi",
 "npx" , "image/vnd.net-fpx",
 "wbmp" , "image/vnd.wap.wbmp",
