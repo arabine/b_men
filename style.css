@@ -7,6 +7,12 @@
 	src: url('../fonts/badaboom.ttf');
 }
 
+@font-face {
+	font-family: "Bangers";
+	src: url('../fonts/Bangers.ttf');
+}
+
+
 /* Pour les textes, style comics */
 
 @font-face {

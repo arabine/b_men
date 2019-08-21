@@ -12,11 +12,6 @@ var app_template = /*template*/`
 <router-view></router-view>
 `
 
-async function loadEverything() {
-
-}
-
-
 // Start main Vue.js App when config is loaded
 const app = new Vue({
     router: router,
@@ -33,7 +28,6 @@ const app = new Vue({
     created: function()
     {
       localStorage.setItem('log', 'debug');
-      loadEverything();
     },
     beforeMount: function() {
 

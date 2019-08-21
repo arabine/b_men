@@ -46,16 +46,20 @@ var game_view_template = /*template*/`
   >
   </PlayerIcon>
 
-  
-    <Card v-bind:x="450+0" v-bind:y="750" v-bind:id="0" class="card"></Card>
-    <Card v-bind:x="450+210"  v-bind:y="750" v-bind:id="1" class="card"></Card>
-    <Card v-bind:x="450+420"  v-bind:y="750" v-bind:id="2" class="card"></Card>
-    <Card v-bind:x="450+630"  v-bind:y="750" v-bind:id="3" class="card"></Card>
-    <Card v-bind:x="450+840"  v-bind:y="750" v-bind:id="4" class="card"></Card>
+    <template v-for="(c, i) in cards"> 
+      <Card v-bind:x="450+210*i"  v-bind:y="750" v-bind:id="i" class="card" :data="c"></Card>
+    </template>
 
 </svg>
 </div>
 `
+/*
+< Card v-bind:x="450+0" v-bind:y="750" v-bind:id="0" class="card"></Card>
+      <Card v-bind:x="450+210"  v-bind:y="750" v-bind:id="1" class="card"></Card>
+      <Card v-bind:x="450+420"  v-bind:y="750" v-bind:id="2" class="card"></Card>
+      <Card v-bind:x="450+630"  v-bind:y="750" v-bind:id="3" class="card"></Card>
+      <Card v-bind:x="450+840"  v-bind:y="750" v-bind:id="4" class="card"></Card>
+*/
 
 GameView = {
   name: 'game-view',
@@ -66,11 +70,17 @@ GameView = {
     return {
       loaded: false,
       initialized: false,
-      images: [ 'images/background.svg', 'images/menu_1.svg', 'images/menu_2.svg' ]
+      images: [ 'images/background.svg', 'images/menu_1.svg', 'images/menu_2.svg' ],
+      dragHandler: d3.drag(),
+      cards: []
     }
   },
   computed: {
     
+  },
+  //====================================================================================================================
+  created() {
+    this.loadEverything();
   },
   //====================================================================================================================
   beforeDestroy() {
@@ -91,8 +101,8 @@ GameView = {
 
     let savedX, savedY;
     let deltaX, deltaY;
-    let dragHandler = d3.drag()
-    .on("start", function () {
+    
+    this.dragHandler.on("start", function () {
       let current = d3.select(this);
       savedX = current.attr("x");
       savedY = current.attr("y");
@@ -113,9 +123,6 @@ GameView = {
           .attr("x", savedX)
           .attr("y", savedY);
     });
-
-    dragHandler(d3.selectAll(".card"));
-
 
     let imageFiles = [ ];
 
@@ -178,7 +185,14 @@ GameView = {
         } 
 
       });
-    }
+    },
+    async loadEverything() {
+      // Api.fetchCards();
+       this.cards = await Api.fetchPlayerCards();
+       this.$nextTick(() => {
+        this.dragHandler(d3.selectAll(".card"));
+       });
+     }
 
     
 
