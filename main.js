@@ -32,6 +32,7 @@ let opponent_cards = [];
 // Bibine : de 0 à 10 (max)
 let player_bibine = 0;
 let opponent_bibine = 0;
+let game_result = '';
 
 function initializeGame()
 {
@@ -66,6 +67,8 @@ function initializeGame()
 
   player_bibine = 0;
   opponent_bibine = 0;
+
+  game_result = '';
 }
 
 function removeCard(index, camp) {
@@ -88,6 +91,24 @@ function isOpponent(camp1, camp2) {
   }
 
   return opp;
+}
+
+function hasWon(camp) {
+  let won = false;
+
+  let count = 0;
+
+  for (let i = 0 ; i < grid.length; i++) {
+    if (grid[i].camp == camp) {
+      count++;
+    }
+  }
+
+  if (count >= (9*3)) {
+    won = true;
+  }
+
+  return won;
 }
 
 function playCard(action, camp)
@@ -266,12 +287,21 @@ function manageRest(req, res, uri)
         try {
           let action = JSON.parse(body);
           playCard(action, 'blue');
-          // On fait jouer l'ordinateur
-          playComputerIA();
+
+          if (hasWon('blue')) {
+            game_result = 'victory';
+          } else {
+            // On fait jouer l'ordinateur
+            playComputerIA();
+          }
+
+          if (hasWon('red')) {
+            game_result = 'lost';
+          }
 
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
-          res.end(JSON.stringify({ grid: grid, cards: player_cards, bibine: player_bibine, opponent: opponent_bibine }));
+          res.end(JSON.stringify({ grid: grid, cards: player_cards, bibine: player_bibine, opponent: opponent_bibine, result: game_result }));
 
         } catch(e) {
 

@@ -74,6 +74,27 @@ var game_view_template = /*template*/`
 </div>
 `
 
+const helpContents = /*template*/`
+<h1>Comment jouer</h1>
+<p>Vous disposez de 5 cartes de trois types : défense, attaque et bibine</p>
+<p>Vous êtes le joueur Bleu et jouez en premier. A chaque tour, jouez une et une seule carte.</p>
+<p>Une carte "défense" se joue sur un emplacement de Camping, libre ou déjà occupé par vous</p>
+<p>Une carte "attaque" se joue sur un emplacement adverse ou directement sur le verre de Pastis adverse pour le faire diminuer.</p>
+<p>Une care "bibine se joue sur votre verre de Pastis, pour en augmenter le niveau.</p>
+<p>Enfin, une poubelle est à votre disposition pour vous défauser d'une carte en main.</p>
+
+<h1>Condition de victoire</h1>
+<p>Le gagnant est celui qui arrivera à occuper tous les emplacements du Camping.</p>
+`
+
+const victoryContents = /*template*/`
+<h1>Vous avez gagné !!</h1>
+`
+
+const lostContents = /*template*/`
+<h1>Vous avez perdu :( :(</h1>
+`
+
 GameView = {
   name: 'game-view',
   template: game_view_template,
@@ -86,7 +107,8 @@ GameView = {
       images: [ 'images/background.svg', 'images/menu_1.svg', 'images/menu_2.svg' ],
       dragHandler: d3.drag(),
       cards: [],
-      grid: []
+      grid: [],
+      popup: null
     }
   },
   computed: {
@@ -178,7 +200,11 @@ GameView = {
         //  console.log('filenameFull ' + filenameFull + ' filenameOnly ' + filenameOnly);
           this.createDef(list[i], filenameOnly);
         }
+        this.createPopup();
+
         this.loaded = true;
+
+
         this.$nextTick(() => {
           d3.selectAll(".droppable").each(function(d,i) {
             let rect = d3.select(this);
@@ -287,15 +313,29 @@ GameView = {
 
           // Update the grid
           for (let i = 0 ; i < 9*3; i++) {
-              this.grid[i].camp = action.grid[i].camp;
-              this.grid[i].state = action.grid[i].state;
+            this.grid[i].camp = action.grid[i].camp;
+            this.grid[i].state = action.grid[i].state;
           }
 
-          this.$refs.bibineBlue.updatePastisLevel(action.bibine);
-          this.$refs.bibineRed.updatePastisLevel(action.opponent);
+          if (action.result == 'victory') {
+            this.cards = [];
+            this.$nextTick(() => {
+              this.$eventHub.$emit('menuClicked', 'victory');
+            });
+          } else if (action.result == 'lost') {
+            this.cards = [];
+            this.$nextTick(() => {
+              this.$eventHub.$emit('menuClicked', 'lost');
+            });
+          } else {
 
-          // Update the player's cards
-          this.cards = action.cards;
+            this.$refs.bibineBlue.updatePastisLevel(action.bibine);
+            this.$refs.bibineRed.updatePastisLevel(action.opponent);
+
+            // Update the player's cards
+            this.cards = action.cards;
+
+          }
         });
 
     },
@@ -310,7 +350,38 @@ GameView = {
        this.$nextTick(() => {
         this.dragHandler(d3.selectAll(".card"));
        });
-     }
+     },
+     createPopup() {
+
+      // instanciate new modal
+      this.popup = new tingle.modal({
+        footer: true,
+        stickyFooter: true,
+        closeMethods: ['button'],
+        closeLabel: "Close"
+      });
+
+      // add a button
+      this.popup.addFooterBtn('Close', 'tingle-btn tingle-btn--default tingle-btn--pull-right', () => {
+        // here goes some logic
+        this.popup.close();
+      });
+
+      this.$eventHub.$on('menuClicked', id => {
+        if (id == 'menu_2') {
+          // set content
+          this.popup.setContent(helpContents);
+          this.popup.open();
+        } else if (id == 'victory') {
+          this.popup.setContent(victoryContents);
+          this.popup.open();
+        } else if (id == 'lost') {
+          this.popup.setContent(lostContents);
+          this.popup.open();
+        }
+      });
+
+    }
 
     
 

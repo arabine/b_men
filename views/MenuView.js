@@ -69,7 +69,6 @@ MenuView = {
         { title: 'Jouer', id:'play', file:'images/menu_1.svg', x: 0, y: 0 },
         { title: 'Histoire', id: 'history', file:'images/menu_2.svg', x: 0, y: 120 },
         { title: 'A propos', id: 'about', file:'images/menu_3.svg', x: 0, y: 240 }
-      //  { title: 'Quitter', file:'menu_4.svg', link:'' }
       ]
     }
   },
