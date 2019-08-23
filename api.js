@@ -62,6 +62,22 @@ class ApiBackend {
         }
     }
 
+    async sendCard(card) {
+        let myHeaders = new Headers();
+        myHeaders.append('Accept', 'application/json');
+        myHeaders.append('Content-Type', 'application/json');
+
+        const requestOptions = {
+            method: 'POST',
+            mode: 'cors',
+            headers: myHeaders,
+            body: JSON.stringify(card)
+        };
+    
+        return fetch(Api.getRESTApiUri() + "/playcard", requestOptions)
+            .then(this.handleResponse)
+    }
+
     handleResponse(response) {
         return response.text().then(text => {
             

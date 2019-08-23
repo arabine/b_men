@@ -4,27 +4,27 @@
         "category": "defense",
         "picture": "tent",
         "text": "Planter sa tente marque le territoire du Campeur. You shall not pass, comme dirait l'autre.",
-        "value": "1"
+        "value": 1
     },
     {
         "title": "Home 2.0",
         "category": "defense",
         "picture": "caravan",
         "text": "La caravane passe... les aigris restent. (Francis Blanche)",
-        "value": "2"
+        "value": 2
     },
     {
         "title": "Chien méchant",
         "category": "attack",
         "picture": "pit",
         "text": "Comment ne pas être un pitbull quand la vie est une chienne ? (Booba)",
-        "value": "2"
+        "value": 2
     },
     {
         "title": "Bibine : rosé-pêche",
         "category": "bibine",
         "picture": "rose",
         "text": "Greffez des plants de rosiers sur des plants de vigne, ça fera du vin rosé naturel. (Pierre Dac)",
-        "value": "1"
+        "value": 1
     }
 ]

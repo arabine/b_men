@@ -53,7 +53,6 @@ const aboutContents = /*template*/`
 <h1>A propos du Jeu</h1>
 <p>Ce jeu a été réalisé dans le cadre de la GameJam Canard PC de 2019 : Make Something Horrible.</p>
 <p>Contact : Anthony (anthony@rabine.fr)</p>
-<p>Le jeu est jouable également en ligne à l'adresse suivante : bmen.d8s.eu</p>
 `
 
 MenuView = {
