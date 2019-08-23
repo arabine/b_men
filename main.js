@@ -123,7 +123,7 @@ function playCard(action, camp)
       if (isOpponent(grid[action.dest.index].camp, camp)) {
         grid[action.dest.index].state -= c.value;
 
-        if (grid[action.dest.index].state < 0) {
+        if (grid[action.dest.index].state <= 0) {
           grid[action.dest.index].state = 0;
           grid[action.dest.index].camp = 'transparent';
         }
@@ -179,6 +179,76 @@ function playCard(action, camp)
 
 }
 
+function hasEmplacement(camp)
+{
+  let index = -1;
+  for (let i = 0 ; i < (9*3); i++) {
+    if (grid[i].camp == camp) {
+      return i;
+    }
+  }
+  return index;
+}
+
+
+function playComputerIA()
+{
+  let action = {
+    card_idx: 0,
+    dest: {
+      type: 'trash',
+      index: 0,
+      accept_drop: true
+    }
+  };
+  let camp = 'red';
+
+  for (let i = 0; i < opponent_cards.length; i++) {
+    action.card_idx = i;
+    let c = opponent_cards[i];
+    let emplacement = hasEmplacement('blue');
+
+    if (c.category == 'attack') {
+      if (player_bibine > 0) {
+        action.dest.type = 'adversaire';
+        break;
+      } else if (emplacement >= 0) {
+        action.dest.type = 'camping';
+        action.dest.index = emplacement;
+        break;
+      }
+    }
+
+    // Pas de else car on essaie d'autres stratégies
+    if (c.category == 'bibine') {
+      action.dest.type = 'bibine';
+      break;
+    }
+
+    if (c.category == 'defense') {
+      let freeEmpl = hasEmplacement('transparent');
+
+      if (freeEmpl >= 0) {
+        action.dest.type = 'camping';
+        action.dest.index = freeEmpl;
+        break;
+      } else {
+        let myEmpl = hasEmplacement('red');
+        if (myEmpl >= 0) {
+          action.dest.type = 'camping';
+          action.dest.index = myEmpl;
+          break;
+        }
+      }
+
+    }
+
+  }
+
+  playCard(action, camp);
+}
+
+
 function manageRest(req, res, uri)
 {
   
@@ -196,6 +266,8 @@ function manageRest(req, res, uri)
         try {
           let action = JSON.parse(body);
           playCard(action, 'blue');
+          // On fait jouer l'ordinateur
+          playComputerIA();
 
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -217,6 +289,7 @@ function manageRest(req, res, uri)
     }
   }
 }
+
 
 
 http.createServer(function(req, res) {
