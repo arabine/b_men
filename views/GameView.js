@@ -73,7 +73,7 @@ var game_view_template = /*template*/`
 
 </svg>
 
-<canvas id="maincanvas"/>
+<CanvasLayer ref="canvasLayer"/>
 
 <Power ref="powerPopup"></Power>
 </div>
@@ -153,7 +153,7 @@ Power = {
 GameView = {
   name: 'game-view',
   template: game_view_template,
-  components: { MenuItem, PlayerIcon, Card, Trash, Power },
+  components: { MenuItem, PlayerIcon, Card, Trash, Power, CanvasLayer },
   //====================================================================================================================
   data: function () {
     return {
@@ -163,7 +163,8 @@ GameView = {
       dragHandler: d3.drag(),
       cards: [],
       grid: [],
-      popup: null
+      popup: null,
+      music: null
     }
   },
   computed: {
@@ -189,6 +190,7 @@ GameView = {
   //====================================================================================================================
   beforeDestroy() {
     this.$eventHub.$off('menuClicked');
+    this.music.stop();
   },
   //====================================================================================================================
   mounted: function() {
@@ -257,8 +259,14 @@ GameView = {
         }
         this.createPopup();
 
-        this.loaded = true;
-
+        this.music = new Howl({
+          src: ['sounds/adventure.webm'],
+          autoplay: true,
+          loop: true,
+          onload : () => {
+            this.loaded = true;
+          }
+        });
 
         this.$nextTick(() => {
           d3.selectAll(".droppable").each(function(d,i) {
@@ -394,6 +402,21 @@ GameView = {
 
             // Update the player's cards
             this.cards = action.cards;
+
+            // Launch effects
+            for (let e = 0; e < action.effects.length; e++) {
+
+              if (action.effects[e] == 'rain') {
+                this.$refs.canvasLayer.startRain();
+                new Howl({
+                  src: ['sounds/rain.webm'],
+                  autoplay: true,
+                  onend : () => {
+                    this.$refs.canvasLayer.stopRain();
+                  }
+                });
+              }
+            }
 
           }
         });

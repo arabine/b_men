@@ -32,6 +32,7 @@ const MAX_POINTS = 5; // poins max par emplacement
 let grid = [];
 let cards = [];
 let game_result = '';
+let effects = [];
 
 // joueur humain
 let player_cards = [];
@@ -132,7 +133,9 @@ function triggerPower(power, camp)
   if (camp == 'blue') {
     if (power == 0) {
       let e_list = getEmplacements('red');
-      clearEmplacements(shuffle(e_list), 2 + getRandomInt(3));
+      clearEmplacements(shuffle(e_list), 3 + getRandomInt(3));
+      effects.push('rain');
+
     }  else if (power == 1) {
       opponent_blocked = 3;
     } else if (power == 2) {
@@ -141,7 +144,9 @@ function triggerPower(power, camp)
   } else {
     if (power == 0) {
       let e_list = getEmplacements('blue');
-      clearEmplacements(shuffle(e_list), 2 + getRandomInt(3));
+      clearEmplacements(shuffle(e_list), 3 + getRandomInt(3));
+      effects.push('rain');
+
     } else if (power == 1) {
       player_blocked = 3;
     } else if (power == 2) {
@@ -403,6 +408,9 @@ function manageRest(req, res, uri)
 
         try {
           let action = JSON.parse(body);
+
+          effects = []; // empty effects list
+
           playCard(action, 'blue');
 
           if (opponent_blocked > 0) {
@@ -424,9 +432,11 @@ function manageRest(req, res, uri)
             game_result = 'lost';
           }
 
+          effects.push('rain');
+
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
-          res.end(JSON.stringify({ grid: grid, cards: player_cards, bibine: player_bibine, opponent: opponent_bibine, result: game_result }));
+          res.end(JSON.stringify({ grid: grid, cards: player_cards, bibine: player_bibine, opponent: opponent_bibine, result: game_result, effects: effects }));
 
         } catch(e) {
 
