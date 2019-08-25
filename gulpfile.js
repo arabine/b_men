@@ -13,7 +13,8 @@ gulp.task('bmen-lib', function() {
           './components/Card.js',
           './components/MenuItem.js',
           './components/PlayerIcon.js',
-		      './components/Trash.js',
+		  './components/Trash.js',
+		  './components/CanvasLayer.js',
            './views/GameView.js',
            './views/MenuView.js',
             'app.js'])
