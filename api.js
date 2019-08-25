@@ -7,14 +7,14 @@ class ApiBackend {
     // API REST
     getRESTApiUri()
     {
-        let uri = window.location.protocol + "//" + window.location.host + "/api";
+        let uri = "http://127.0.0.1:3000/api";
         //console.log("REST API: " + uri);
         return uri;
     }
 
     getRootUrl()
     {
-        let uri = window.location.protocol + "//" + window.location.host;
+        let uri = "http://127.0.0.1:3000";
         return uri;
     }
 

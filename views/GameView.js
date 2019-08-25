@@ -26,9 +26,10 @@ var game_view_template = /*template*/`
 
   <template v-for="(g, i) in grid">
     <rect ry="10" :x="g.x" :y="g.y" width="110" height="155" v-bind:style="{ fill: g.camp }" :data-index="i" data-drop-zone="camping" class="droppable"/>
-    <text :x="g.x + 50" :y="g.y + 70" 
-        font-family="Badaboom" 
-        font-size="40">
+    <text :x="g.x + 40" :y="g.y + 80" 
+        font-family="VTC" 
+        font-size="60"
+        font-style="bold">
         {{g.state}}
     </text>
   </template>
@@ -71,8 +72,12 @@ var game_view_template = /*template*/`
   </template>
 
 </svg>
+
+<canvas id="maincanvas"/>
+
+<Power ref="powerPopup"></Power>
 </div>
-`
+`;
 
 const helpContents = /*template*/`
 <h1>Comment jouer</h1>
@@ -85,20 +90,70 @@ const helpContents = /*template*/`
 
 <h1>Condition de victoire</h1>
 <p>Le gagnant est celui qui arrivera à occuper tous les emplacements du Camping.</p>
-`
+`;
 
 const victoryContents = /*template*/`
 <h1>Vous avez gagné !!</h1>
-`
+`;
 
 const lostContents = /*template*/`
 <h1>Vous avez perdu :( :(</h1>
-`
+`;
+
+const powerTemplate =  /*template*/`
+<div>
+  <h1>Choisissez votre pouvoir spécial</h1>
+  <select id="monselect" v-model="selected">
+    <option value="0">Tempête sur le Camping : effacez des emplacements adverses</option> 
+    <option value="1">Mal de tête : bloquez le joueur adverse pendant plusieurs tours</option>
+    <option value="2">Pétanque Master : videz la Bibine adverse</option>
+  </select>
+</div>
+`;
+
+const MAX_POINTS = 5;
+
+Power = {
+  name: 'power',
+  template: powerTemplate,
+  data() {
+    return {
+      popup: null,
+      selected: 0
+    }
+  },
+  methods: {
+    show() {
+      // open modal
+      this.popup.open();
+    },
+    getPower() {
+      return this.selected;
+    }
+  },
+  mounted() {
+    // instanciate new modal
+    this.popup = new tingle.modal({
+      footer: true,
+      stickyFooter: true,
+      closeMethods: ['button'],
+      closeLabel: "Close"
+    });
+
+    this.popup.setContent(this.$el);
+
+    // add a button
+    this.popup.addFooterBtn('Close', 'tingle-btn tingle-btn--default tingle-btn--pull-right', () => {
+      // here goes some logic
+      this.popup.close();
+    });
+  }
+};
 
 GameView = {
   name: 'game-view',
   template: game_view_template,
-  components: { MenuItem, PlayerIcon, Card, Trash },
+  components: { MenuItem, PlayerIcon, Card, Trash, Power },
   //====================================================================================================================
   data: function () {
     return {
@@ -219,6 +274,9 @@ GameView = {
               .attr('data-drop-zone', rect.attr('data-drop-zone')) // On copie le type de la zone droppable dans le carré constuit (pour réutilisation)
               .attr('data-index', rect.attr('data-index'));
           });
+
+        //  this.$eventHub.$emit('menuClicked', 'power');
+          this.$refs.powerPopup.show();
         });
 
     })
@@ -272,7 +330,7 @@ GameView = {
             }
             
             if (app.cards[card_id].category == 'defense') {
-              if (app.grid[index].camp != 'red') {
+              if ((app.grid[index].camp != 'red') && (app.grid[index].state < MAX_POINTS)) {
                 accept_drop = true;
               }
             }
@@ -307,8 +365,10 @@ GameView = {
       return destination;
     },
     dropCard(dest, card_idx) {
+      let power = this.$refs.powerPopup.getPower();
+
       // On envoie au serveur notre carte jouée, en retour on reçoit la conséquence et le jeu de l'adversaire
-      Api.sendCard({card_idx: card_idx, dest: dest }).then((action) => {
+      Api.sendCard({card_idx: card_idx, dest: dest, power: power }).then((action) => {
           console.log("Received: " + JSON.stringify(action));
 
           // Update the grid
@@ -377,6 +437,9 @@ GameView = {
           this.popup.open();
         } else if (id == 'lost') {
           this.popup.setContent(lostContents);
+          this.popup.open();
+        } else if (id == 'power') {
+          this.popup.setContent(choosePowerContents);
           this.popup.open();
         }
       });

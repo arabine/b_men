@@ -4,7 +4,9 @@ let http = require('http'),
     url = require('url'),
     path = require('path'),
     fs = require('fs');
-	
+
+let appDir = path.dirname(require.main.filename);
+
 let mimeTypes = {
     "html": "text/html",
     "jpeg": "image/jpeg",
@@ -24,19 +26,27 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-let cards = [];
-let grid = [];
-let player_cards = [];
-let opponent_cards = [];
+const MAX_POINTS = 5; // poins max par emplacement
 
-// Bibine : de 0 à 10 (max)
-let player_bibine = 0;
-let opponent_bibine = 0;
+// Elements communs du jeu
+let grid = [];
+let cards = [];
 let game_result = '';
+
+// joueur humain
+let player_cards = [];
+let player_bibine = 0; // Bibine : de 0 à 10 (max)
+let player_blocked = 0;
+
+// joueur ordinateur (IA)
+let opponent_cards = [];
+let opponent_bibine = 0; // Bibine : de 0 à 10 (max)
+let opponent_power = 0;
+let opponent_blocked = 0;
 
 function initializeGame()
 {
-  let filename = path.join(process.cwd(), '/engine/cards.json');
+  let filename = path.join(appDir, '/engine/cards.json');
   let rawdata = fs.readFileSync(filename);
   cards = JSON.parse(rawdata);
 
@@ -66,7 +76,11 @@ function initializeGame()
   }
 
   player_bibine = 0;
+  player_blocked = 0;
+
   opponent_bibine = 0;
+  opponent_power = getRandomInt(3);
+  opponent_blocked = 0;
 
   game_result = '';
 }
@@ -82,33 +96,58 @@ function removeCard(index, camp) {
   }
 }
 
-function isOpponent(camp1, camp2) {
-  let opp = false;
-  if ((camp1 != 'transparent') && (camp2 != 'transparent')) {
-    if (camp1 != camp2) {
-      opp = true;
-    }
+/**
+ * Shuffles array in place.
+ * @param {Array} a items An array containing the items.
+ */
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
   }
-
-  return opp;
+  return a;
 }
 
-function hasWon(camp) {
-  let won = false;
+function clearEmplacements(list, max)
+{
+  let loops = (list.length > max) ? max : list.length;
 
-  let count = 0;
+  for (let i = 0; i < loops; i++) {
+    grid[list[i]].state = 0;
+    grid[list[i]].camp = 'transparent';
+  }
+}
 
-  for (let i = 0 ; i < grid.length; i++) {
-    if (grid[i].camp == camp) {
-      count++;
+function triggerPower(power, camp)
+{
+  // 0 : efface emplacements ennemis
+  // 1 : bloquez l'adversaire
+  // 2 : vide la bibine
+
+  console.log(">>>>>>>>>   TRIGGER POWER: " + power + " for camp: " + camp);
+
+  if (camp == 'blue') {
+    if (power == 0) {
+      let e_list = getEmplacements('red');
+      clearEmplacements(shuffle(e_list), 2 + getRandomInt(3));
+    }  else if (power == 1) {
+      opponent_blocked = 3;
+    } else if (power == 2) {
+      opponent_bibine = 0;
+    }
+  } else {
+    if (power == 0) {
+      let e_list = getEmplacements('blue');
+      clearEmplacements(shuffle(e_list), 2 + getRandomInt(3));
+    } else if (power == 1) {
+      player_blocked = 3;
+    } else if (power == 2) {
+      player_bibine = 0;
     }
   }
-
-  if (count >= (9*3)) {
-    won = true;
-  }
-
-  return won;
 }
 
 function playCard(action, camp)
@@ -134,9 +173,15 @@ function playCard(action, camp)
 
     if (c.category == 'defense') {
       if ((grid[action.dest.index].camp == 'transparent') || (grid[action.dest.index].camp == camp)) {
-        grid[action.dest.index].state += c.value;
-        grid[action.dest.index].camp = camp;
-        can_play = true;
+
+        if (grid[action.dest.index].state < 10) {
+          grid[action.dest.index].state += c.value;
+          if (grid[action.dest.index].state > 10) {
+            grid[action.dest.index].state = 10; // Saturation
+          }
+          grid[action.dest.index].camp = camp;
+          can_play = true;
+        }
       }
     }
 
@@ -164,15 +209,15 @@ function playCard(action, camp)
       if (camp == 'blue') {
         player_bibine += c.value;
         if (player_bibine > 10) {
-          // TODO: check pouvoir spécial
-          player_bibine = 10;
+          player_bibine = 0;
+          triggerPower(action.power, 'blue');
         }
         
       } else {
         opponent_bibine += c.value;
         if (opponent_bibine > 10) {
-          // TODO: check pouvoir spécial
-          opponent_bibine = 10;
+          opponent_bibine = 0;
+          triggerPower(opponent_power, 'red');
         }
       }
 
@@ -200,17 +245,102 @@ function playCard(action, camp)
 
 }
 
+function isOpponent(camp1, camp2) {
+  let opp = false;
+  if ((camp1 != 'transparent') && (camp2 != 'transparent')) {
+    if (camp1 != camp2) {
+      opp = true;
+    }
+  }
+
+  return opp;
+}
+
+function hasWon(camp) {
+  let won = false;
+
+  let count = getEmplacements(camp).length;
+
+  if (count >= (9*3)) {
+    won = true;
+  }
+
+  return won;
+}
+
+function getEmplacements(camp)
+{
+  let e_list = [];
+
+  for (let i = 0 ; i < (9*3); i++) {
+    if (grid[i].camp == camp) {
+      e_list.push(i);
+    }
+  }
+
+  return e_list;
+}
+
 function hasEmplacement(camp)
 {
   let index = -1;
-  for (let i = 0 ; i < (9*3); i++) {
-    if (grid[i].camp == camp) {
-      return i;
-    }
+  let e_list = getEmplacements(camp);
+
+  if (e_list.length >= 2) {
+    // On choisit un emplacement au hasard
+    index = e_list[getRandomInt(e_list.length)];
   }
+
   return index;
 }
 
+function strategyBibine(action, c)
+{
+  if (c.category == 'bibine') {
+    action.dest.type = 'bibine';
+    action.valid = true;
+  }
+  return action;
+}
+
+function strategyAttack(action, c)
+{
+  let emplacement = hasEmplacement('blue');
+  // Attaque
+  if (c.category == 'attack') {
+    if (player_bibine > 0) {
+      action.dest.type = 'adversaire';
+      action.valid = true;
+    } else if (emplacement >= 0) {
+      action.dest.type = 'camping';
+      action.dest.index = emplacement;
+      action.valid = true;
+    }
+  }
+  return action;
+}
+
+
+function strategyEmplacement(action, c)
+{
+  if (c.category == 'defense') {
+    let freeEmpl = hasEmplacement('transparent');
+
+    if (freeEmpl >= 0) {
+      action.dest.type = 'camping';
+      action.dest.index = freeEmpl;
+      action.valid = true;
+    } else {
+      let myEmpl = hasEmplacement('red');
+      if (myEmpl >= 0) {
+        action.dest.type = 'camping';
+        action.dest.index = myEmpl;
+        action.valid = true;
+      }
+    }
+  }
+  return action;
+}
 
 function playComputerIA()
 {
@@ -220,53 +350,40 @@ function playComputerIA()
       type: 'trash',
       index: 0,
       accept_drop: true
-    }
+    },
+    power: 0,
+    valid: false
   };
   let camp = 'red';
 
-  for (let i = 0; i < opponent_cards.length; i++) {
+  let strategies = [0, 1, 2];
+
+  for (let i = 0; (i < opponent_cards.length) && !action.valid; i++) {
     action.card_idx = i;
     let c = opponent_cards[i];
-    let emplacement = hasEmplacement('blue');
+    
+    strategies = shuffle(strategies);
 
-    if (c.category == 'attack') {
-      if (player_bibine > 0) {
-        action.dest.type = 'adversaire';
-        break;
-      } else if (emplacement >= 0) {
-        action.dest.type = 'camping';
-        action.dest.index = emplacement;
-        break;
-      }
-    }
-
-    // Pas de else car on essaie d'autres stratégies
-    if (c.category == 'bibine') {
-      action.dest.type = 'bibine';
-      break;
-    }
-
-    if (c.category == 'defense') {
-      let freeEmpl = hasEmplacement('transparent');
-
-      if (freeEmpl >= 0) {
-        action.dest.type = 'camping';
-        action.dest.index = freeEmpl;
-        break;
-      } else {
-        let myEmpl = hasEmplacement('red');
-        if (myEmpl >= 0) {
-          action.dest.type = 'camping';
-          action.dest.index = myEmpl;
-          break;
-        }
+    for (let s = 0; s < strategies.length; s++) {
+      if (strategies[s] == 0) {
+        action = strategyAttack(action, c);
+      } else  if (strategies[s] == 1) {
+        action = strategyEmplacement(action, c);
+      } else  if (strategies[s] == 2) {
+        action = strategyBibine(action, c);
       }
 
-    }
-
+      if (action.valid) {
+        break;
+      }
+    } 
   }
 
   playCard(action, camp);
+
+  if (player_blocked > 0) {
+    player_blocked--;
+  }
 }
 
 
@@ -288,11 +405,19 @@ function manageRest(req, res, uri)
           let action = JSON.parse(body);
           playCard(action, 'blue');
 
+          if (opponent_blocked > 0) {
+            opponent_blocked--;
+          }
+
           if (hasWon('blue')) {
             game_result = 'victory';
           } else {
-            // On fait jouer l'ordinateur
-            playComputerIA();
+            if (opponent_blocked == 0) {
+              // On fait jouer l'ordinateur tant que l'adversaire est bloqué
+              do {
+                playComputerIA();
+              } while (player_blocked > 0);
+            }
           }
 
           if (hasWon('red')) {
@@ -331,7 +456,7 @@ http.createServer(function(req, res) {
       uri = "/index.html";
     }
 
-    let filename = path.join(process.cwd(), uri);
+    let filename = path.join(appDir, uri);
 
     fs.exists(filename, function(exists) {
         if(!exists) {
@@ -353,6 +478,7 @@ http.createServer(function(req, res) {
     }); //end path.exists
 }).listen(3000);
 
+let debug = process.env.NODE_ENV !== "production";
 
 function createWindow () {
   // Cree la fenetre du navigateur.
@@ -365,11 +491,13 @@ function createWindow () {
       nodeIntegration: true
     }
   });
- // win.removeMenu();
-  win.setAspectRatio(16/9);
-  // and load the index.html of the app.
- // win.loadFile('index.html');
-  win.loadFile('blank.html');
+
+  if (debug) {
+    win.loadFile('blank.html');
+  } else {
+    win.removeMenu();
+    win.loadFile('index.html');
+  }
 }
 
 app.on('ready', createWindow);
