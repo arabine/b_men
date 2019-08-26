@@ -9,6 +9,8 @@ let player_icon_template = /*template*/`
    <rect x="0" :y="pastisLevel" width="100" height="158" style="fill: white; stroke-width: 0"/>
 </clipPath>
 
+
+
 <svg
    width="400"
    height="78"
@@ -23,6 +25,7 @@ let player_icon_template = /*template*/`
        d="m -390.26809,127.67832 85.29425,-13.75834 11.41061,18.63108 -105.83333,2.00642 z"
        id="path817" />
   </g>
+  
 </svg>
 
 <svg
@@ -101,7 +104,11 @@ let player_icon_template = /*template*/`
          y="68.364586"
          style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Heavy';fill:#fde754;fill-opacity:1;stroke-width:0.09547299">DEPUIS 1932</tspan></text>
   </g>
+
 </svg>
+
+<circle cx="300" cy="100" r="100" stroke="black" stroke-width="3" fill="white"/>
+<image :xlink:href="getImage()" x="220" y ="30" width="160" height="160" draggable="false" onmousedown="if (event.preventDefault) event.preventDefault()"/>
 
 </svg>
 `;
@@ -152,6 +159,9 @@ PlayerIcon = {
          },
          getId() {
             return 'pastisClip' + this.color;
+         },
+         getImage() {
+            return 'images/beauf_' + this.color + '.png';
          }
 
 
