@@ -86,7 +86,7 @@ const helpContents = /*template*/`
 <p>Une carte "défense" se joue sur un emplacement de Camping, libre ou déjà occupé par vous</p>
 <p>Une carte "attaque" se joue sur un emplacement adverse ou directement sur le verre de Pastis adverse pour le faire diminuer.</p>
 <p>Une care "bibine se joue sur votre verre de Pastis, pour en augmenter le niveau.</p>
-<p>Enfin, une poubelle est à votre disposition pour vous défauser d'une carte en main.</p>
+<p>Enfin, une poubelle est à votre disposition pour vous défausser d'une carte en main.</p>
 
 <h1>Condition de victoire</h1>
 <p>Le gagnant est celui qui arrivera à occuper tous les emplacements du Camping.</p>
@@ -164,7 +164,8 @@ GameView = {
       cards: [],
       grid: [],
       popup: null,
-      music: null
+      music: null,
+      matrix: []
     }
   },
   computed: {
@@ -175,7 +176,7 @@ GameView = {
     this.loadEverything();
 
     // Create the grid
-    for (let j = 0 ; j < 3; j++) {
+    for (let j = 0 ; j < 3; j++) {     
       for (let i = 0 ; i < 9; i++) {
         this.grid.push( {
           state: 0,
@@ -184,6 +185,15 @@ GameView = {
           y: 190 + j*175
         });
       }
+    }
+
+    // Create the matrix
+    this.matrix = [];
+    for(let i = 0; i < 5; i++) {
+        this.matrix[i] = [];
+        for(var j = 0; j < 11; j++) {
+            this.matrix[i][j] = 'verboten';
+        }
     }
 
   },
@@ -300,6 +310,34 @@ GameView = {
       d3.select(node).attr("id", id_name);
       g.node().appendChild(node);
     },
+    isGridEmpty: function(camp) {
+      let empty = true;
+      for (let j = 0 ; j < 27; j++) {
+          if (this.grid[j].camp == camp) {
+            empty = false;
+          }
+      }
+      return empty;
+    },
+    isNextToCard: function(i, camp) {
+      let nextTo = false;
+      
+      let y = Math.floor(i/9);
+      let x = Math.floor(i - (9*y));
+
+      x += 1;
+      y += 1;
+
+      if ((this.matrix[y][x+1] == camp) ||
+          (this.matrix[y][x-1] == camp) ||
+          (this.matrix[y+1][x] == camp)  ||
+          (this.matrix[y-1][x] == camp) )
+      {
+        nextTo = true;
+      }
+      
+      return nextTo;
+    },
     isSelected: function(x, y, card_id) {
 
       let app = this;
@@ -328,7 +366,7 @@ GameView = {
             // Le plus facile
             accept_drop = true;
 
-          // ==========  ZONE DEFENSE, LA GRILLE ==========
+          // ==========  ZONE CAMPING, LA GRILLE ==========
           } else if (drop_zone == 'camping') {
             // On va tester si l'emplacement est valide selon la carte
             if (app.cards[card_id].category == 'attack') {
@@ -338,8 +376,15 @@ GameView = {
             }
             
             if (app.cards[card_id].category == 'defense') {
-              if ((app.grid[index].camp != 'red') && (app.grid[index].state < MAX_POINTS)) {
+              if ((app.grid[index].camp == 'blue') && (app.grid[index].state < MAX_POINTS)) {
                 accept_drop = true;
+              } else if (app.grid[index].camp == 'transparent') {
+                  if (app.isGridEmpty('blue')) {
+                    accept_drop = true;
+                  } else {
+                    // On n'autorise que les cartes adjacentes à une autre
+                    accept_drop = app.isNextToCard(index, 'blue');
+                  }
               }
             }
 
@@ -383,6 +428,11 @@ GameView = {
           for (let i = 0 ; i < 9*3; i++) {
             this.grid[i].camp = action.grid[i].camp;
             this.grid[i].state = action.grid[i].state;
+
+            // update the matrix
+            let y = Math.floor(i/9);
+            let x = Math.floor(i - (9*y));
+            this.matrix[y+1][x+1] = action.grid[i].camp;
           }
 
           if (action.result == 'victory') {

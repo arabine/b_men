@@ -33,6 +33,7 @@ let grid = [];
 let cards = [];
 let game_result = '';
 let effects = [];
+let matrix = [];
 
 // joueur humain
 let player_cards = [];
@@ -62,6 +63,15 @@ function initializeGame()
         camp: "transparent"
       });
     }
+  }
+
+  // Create the matrix
+  matrix = [];
+  for(let i = 0; i < 5; i++) {
+      matrix[i] = [];
+      for(var j = 0; j < 11; j++) {
+          matrix[i][j] = 'verboten';
+      }
   }
 
   // Init player cards
@@ -155,6 +165,38 @@ function triggerPower(power, camp)
   }
 }
 
+
+function isNextToCard(i, camp) {
+  let nextTo = false;
+  
+  let y = Math.floor(i/9);
+  let x = Math.floor(i - (9*y));
+
+  x += 1;
+  y += 1;
+
+  if ((matrix[y][x+1] == camp) ||
+      (matrix[y][x-1] == camp) ||
+      (matrix[y+1][x] == camp)  ||
+      (matrix[y-1][x] == camp) )
+  {
+    nextTo = true;
+  }
+  
+  return nextTo;
+}
+
+
+function isGridEmpty(camp) {
+  let empty = true;
+  for (let j = 0 ; j < 27; j++) {
+      if (grid[j].camp == camp) {
+        empty = false;
+      }
+  }
+  return empty;
+}
+
 function playCard(action, camp)
 {
   console.log(" Played card: " + action.card_idx + " in " + action.dest.type + " for player: " + camp);
@@ -179,12 +221,18 @@ function playCard(action, camp)
     if (c.category == 'defense') {
       if ((grid[action.dest.index].camp == 'transparent') || (grid[action.dest.index].camp == camp)) {
 
-        if (grid[action.dest.index].state < 10) {
+        if (grid[action.dest.index].state < MAX_POINTS) {
           grid[action.dest.index].state += c.value;
-          if (grid[action.dest.index].state > 10) {
-            grid[action.dest.index].state = 10; // Saturation
+          if (grid[action.dest.index].state > MAX_POINTS) {
+            grid[action.dest.index].state = MAX_POINTS; // Saturation
           }
           grid[action.dest.index].camp = camp;
+
+          // Update the matrix
+          let y = Math.floor(action.dest.index/9);
+          let x = Math.floor(action.dest.index - (9*y));
+          matrix[y+1][x+1] = camp;
+
           can_play = true;
         }
       }
@@ -308,6 +356,24 @@ function strategyBibine(action, c)
   return action;
 }
 
+function conquer(e_list)
+{
+  let index = -1;
+  e_list = shuffle(e_list);
+  if (e_list.length >= 1) {
+    // On choisit le premier emplacement valide
+    for (let i = 0; i < e_list.length; i++) {
+      if (isNextToCard(e_list[i], 'red')) {
+        index = e_list[i];
+        break;
+      }
+    }
+  }
+
+  return index;
+}
+
+
 function strategyAttack(action, c)
 {
   let emplacement = hasEmplacement('blue');
@@ -329,20 +395,52 @@ function strategyAttack(action, c)
 function strategyEmplacement(action, c)
 {
   if (c.category == 'defense') {
-    let freeEmpl = hasEmplacement('transparent');
-
-    if (freeEmpl >= 0) {
-      action.dest.type = 'camping';
-      action.dest.index = freeEmpl;
-      action.valid = true;
-    } else {
-      let myEmpl = hasEmplacement('red');
-      if (myEmpl >= 0) {
+    
+    if (isGridEmpty('red')) {
+      // Grille vide, on place où l'on veut
+      let freeEmpl = hasEmplacement('transparent');
+      if (freeEmpl >= 0) {
         action.dest.type = 'camping';
-        action.dest.index = myEmpl;
+        action.dest.index = freeEmpl;
         action.valid = true;
       }
     }
+
+    if (!action.valid) {
+
+
+      let e_list = getEmplacements('transparent');
+      let index = conquer(e_list);
+
+      if (index >= 0) {
+        action.dest.type = 'camping';
+        action.dest.index = index;
+        action.valid = true;
+      } else {
+        let red_list = shuffle(getEmplacements('red'));
+
+        if (red_list.length >= 1) {
+
+          let i_found = -1;
+          let min_points = MAX_POINTS;
+          // On choisit l'emplacement avec les plus faibles points
+          for (let i = 0; i < red_list.length; i++) {
+            if (grid[red_list[i]].state < min_points) {
+              min_points = grid[red_list[i]].state;
+              i_found = red_list[i];
+            }
+          }
+
+          if (i_found >= 0) {
+            action.dest.type = 'camping';
+            action.dest.index = i_found;
+            action.valid = true;
+          }
+        }
+      }
+      
+    }
+  
   }
   return action;
 }
@@ -432,7 +530,7 @@ function manageRest(req, res, uri)
             game_result = 'lost';
           }
 
-          effects.push('rain');
+        //  effects.push('rain');
 
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
