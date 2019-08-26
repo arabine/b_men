@@ -8,7 +8,8 @@ CanvasLayer = {
     data() {
       return {
             ctx: null,
-            intervalID: null
+            intervalID: null,
+            reqId: null
         }
     },
     methods: {
@@ -18,7 +19,21 @@ CanvasLayer = {
         },
         startRain() {
             this.intervalID = renderRain(this.ctx);
+        },
+        startLightnings() {
+            
+            initLightnings(this.ctx);
+            this.reqId = requestAnimationFrame(this.renderLoop);
+        },
+        stopLightnings() {
+            cancelAnimationFrame(this.reqId);
+            this.ctx.clearRect(0, 0, 1920, 1080);
+        },
+        renderLoop() {
+            renderLightnings(this.ctx);
+            this.reqId = requestAnimationFrame(this.renderLoop);
         }
+
     },
     mounted() {
         let canvas = document.getElementById('maincanvas');

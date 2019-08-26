@@ -113,6 +113,14 @@ const powerTemplate =  /*template*/`
 
 const MAX_POINTS = 5;
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+function isFunction(functionToCheck) {
+  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+
 Power = {
   name: 'power',
   template: powerTemplate,
@@ -165,7 +173,8 @@ GameView = {
       grid: [],
       popup: null,
       music: null,
-      matrix: []
+      matrix: [],
+      effects: null
     }
   },
   computed: {
@@ -196,6 +205,14 @@ GameView = {
         }
     }
 
+
+    this.effects = new Map();
+    this.effects.set('rain', { file: 'sounds/rain.webm', start: this.startRain, stop: this.stopRain });
+    this.effects.set('power', { file: this.getRandomZap, start: this.startLightnings, stop: this.stopLightnings });
+    this.effects.set('trash', { file: 'sounds/trash.ogg' });
+
+    
+    
   },
   //====================================================================================================================
   beforeDestroy() {
@@ -304,6 +321,53 @@ GameView = {
   },
   //====================================================================================================================
   methods: {
+    startLightnings() {
+      this.$refs.canvasLayer.startLightnings();
+    },
+    stopLightnings() {
+      this.$refs.canvasLayer.stopLightnings();
+    },
+    startRain() {
+      this.$refs.canvasLayer.startRain();
+    },
+    stopRain() {
+      this.$refs.canvasLayer.stopRain();
+    },
+    getRandomZap() {
+      let zap = getRandomInt(5);
+      return 'sounds/zap' + zap + '.ogg';
+    },
+    play_effect(effect_list) {
+
+      let obj = this.effects.get(effect_list[0]);
+
+      if (obj !== undefined) {
+        let fileName = isFunction(obj.file) ? obj.file() : obj.file;
+
+        let sound = new Howl({
+            src: [fileName],
+            volume: 0.7,
+            onend: () => {
+              if (obj.stop !== undefined) {
+                obj.stop();
+              }
+              effect_list.shift();
+              if (effect_list.length > 0) {
+                  this.play_effect(effect_list);
+              }
+            }
+        });
+        if (obj.start !== undefined) {
+          obj.start();
+        }
+        sound.play();
+      } else {
+        effect_list.shift();
+        if (effect_list.length > 0) {
+            this.play_effect(effect_list);
+        }
+      }
+    },
     createDef: function(xml, id_name) {
       let g = d3.select('#mainsvg defs');
       let node = document.importNode(xml.documentElement, true);
@@ -453,21 +517,8 @@ GameView = {
             // Update the player's cards
             this.cards = action.cards;
 
-            // Launch effects
-            for (let e = 0; e < action.effects.length; e++) {
-
-              if (action.effects[e] == 'rain') {
-                this.$refs.canvasLayer.startRain();
-                new Howl({
-                  src: ['sounds/rain.webm'],
-                  autoplay: true,
-                  onend : () => {
-                    this.$refs.canvasLayer.stopRain();
-                  }
-                });
-              }
-            }
-
+            // Chain effects
+            this.play_effect(action.effects);
           }
         });
 

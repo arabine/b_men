@@ -19,7 +19,8 @@ let mimeTypes = {
     "ico": "image/x-icon",
     "woff2": "application/font-woff2",
     "ttf": "application/octet-stream",
-    "webm": "audio/webm"
+    "webm": "audio/webm",
+    "ogg": "audio/ogg"
 };
 
 function getRandomInt(max) {
@@ -139,6 +140,8 @@ function triggerPower(power, camp)
   // 2 : vide la bibine
 
   console.log(">>>>>>>>>   TRIGGER POWER: " + power + " for camp: " + camp);
+
+  effects.push('power');
 
   if (camp == 'blue') {
     if (power == 0) {
@@ -530,7 +533,9 @@ function manageRest(req, res, uri)
             game_result = 'lost';
           }
 
-        //  effects.push('rain');
+          effects.push('trash');
+          effects.push('rain');
+          effects.push('power');
 
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
