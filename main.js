@@ -53,7 +53,7 @@ function initializeGame()
   let rawdata = fs.readFileSync(filename);
   cards = JSON.parse(rawdata);
 
-  console.log(" Init game engine: " + cards.length + " cards found");
+  console.log("Init game engine");
 
   // Create the grid
   grid = [];
@@ -64,6 +64,25 @@ function initializeGame()
         camp: "transparent"
       });
     }
+  }
+
+  function piocheNewCard()
+  {
+    // pourcentage de piocher des cartes :
+    // 0-49 : carte commune
+    // 50-89 : carte super
+    // 90-99 : carte mega
+    
+    let category = getRandomInt(100);
+
+    if (category < 50) {
+      return cards['common'][getRandomInt(cards['common'].length)];
+    } else if (category >= 90) {
+      return cards['mega'][getRandomInt(cards['mega'].length)];
+    } else {
+      return cards['super'][getRandomInt(cards['super'].length)];
+    }
+
   }
 
   // Create the matrix
@@ -78,13 +97,13 @@ function initializeGame()
   // Init player cards
   player_cards = [];
   for (let i = 0; i < 5; i++) {
-    player_cards.push(cards[getRandomInt(cards.length)]);
+    player_cards.push(piocheNewCard());
   }
 
   // Init opponent cards
   opponent_cards = [];
   for (let i = 0; i < 5; i++) {
-    opponent_cards.push(cards[getRandomInt(cards.length)]);
+    opponent_cards.push(piocheNewCard());
   }
 
   player_bibine = 0;
@@ -101,10 +120,10 @@ function removeCard(index, camp) {
   // on vire cette carte et on en tire une autre
   if (camp == 'blue') {
     player_cards.splice(index, 1);
-    player_cards.push(cards[getRandomInt(cards.length)]);
+    player_cards.push(piocheNewCard());
   } else {
     opponent_cards.splice(index, 1);
-    opponent_cards.push(cards[getRandomInt(cards.length)]);
+    opponent_cards.push(piocheNewCard());
   }
 }
 
@@ -533,9 +552,9 @@ function manageRest(req, res, uri)
             game_result = 'lost';
           }
 
-          effects.push('trash');
-          effects.push('rain');
-          effects.push('power');
+        //  effects.push('trash');
+        //  effects.push('rain');
+        //  effects.push('power');
 
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});

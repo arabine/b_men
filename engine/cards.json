@@ -1,4 +1,5 @@
-[
+{
+	"common": [
     {
         "title": "Tente",
         "category": "defense",
@@ -6,6 +7,22 @@
         "text": "Planter sa tente marque le territoire du Campeur. You shall not pass, comme dirait l'autre.",
         "value": 1
     },
+    {
+        "title": "Bibine : rosé-pêche",
+        "category": "bibine",
+        "picture": "rose",
+        "text": "Greffez des plants de rosiers sur des plants de vigne, ça fera du vin rosé naturel. (Pierre Dac)",
+        "value": 1
+    },
+    {
+        "title": "Boules de pétanque",
+        "category": "attack",
+        "picture": "pit",
+        "text": "“Le lancement du poids, c’est la pétanque des costauds. (Geluck)",
+        "value": 1
+    }
+	],
+	"super": [
     {
         "title": "Home 2.0",
         "category": "defense",
@@ -21,10 +38,34 @@
         "value": 2
     },
     {
-        "title": "Bibine : rosé-pêche",
-        "category": "bibine",
-        "picture": "rose",
-        "text": "Greffez des plants de rosiers sur des plants de vigne, ça fera du vin rosé naturel. (Pierre Dac)",
-        "value": 1
+        "title": "Pote emcombrant",
+        "category": "attack",
+        "picture": "joug",
+        "text": "Votre pote Jouggy a bouché les chiottes du camping!",
+        "value": 3
     }
-]
+	],
+	"mega": [
+	{
+        "title": "Base secrète",
+        "category": "defense",
+        "picture": "caravan",
+        "text": "Si tu vois une chèvre dans le repaire d'un lion, aie peur d'elle.",
+        "value": 5
+    },
+	{
+        "title": "Aïe ça pique",
+        "category": "attack",
+        "picture": "pit",
+        "text": "Cyclope ? Tornade ?… Et vous c’est quoi ? Roulette !?",
+        "value": 5
+    },
+	{
+        "title": "Potion magique",
+        "category": "bibine",
+        "picture": "bibine",
+        "text": "Tu n'auras pas de potion magique, tu es tombé dedans quand tu étais petit. (Panoramix)",
+        "value": 5
+    }
+	]
+}
