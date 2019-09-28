@@ -17,7 +17,7 @@
     {
         "title": "Boules de pétanque",
         "category": "attack",
-        "picture": "pit",
+        "picture": "boules",
         "text": "“Le lancement du poids, c’est la pétanque des costauds. (Geluck)",
         "value": 1
     }
@@ -49,21 +49,21 @@
 	{
         "title": "Base secrète",
         "category": "defense",
-        "picture": "caravan",
+        "picture": "mansion",
         "text": "Si tu vois une chèvre dans le repaire d'un lion, aie peur d'elle.",
         "value": 5
     },
 	{
         "title": "Aïe ça pique",
         "category": "attack",
-        "picture": "pit",
+        "picture": "claws",
         "text": "Cyclope ? Tornade ?… Et vous c’est quoi ? Roulette !?",
         "value": 5
     },
 	{
         "title": "Potion magique",
         "category": "bibine",
-        "picture": "bibine",
+        "picture": "potion",
         "text": "Tu n'auras pas de potion magique, tu es tombé dedans quand tu étais petit. (Panoramix)",
         "value": 5
     }

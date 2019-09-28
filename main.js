@@ -47,6 +47,26 @@ let opponent_bibine = 0; // Bibine : de 0 à 10 (max)
 let opponent_power = 0;
 let opponent_blocked = 0;
 
+
+function pioche()
+  {
+    // pourcentage de piocher des cartes :
+    // 0-49 : carte commune
+    // 50-89 : carte super
+    // 90-99 : carte mega
+    
+    let category = getRandomInt(100);
+
+    if (category < 50) {
+      return cards['common'][getRandomInt(cards['common'].length)];
+    } else if (category >= 90) {
+      return cards['mega'][getRandomInt(cards['mega'].length)];
+    } else {
+      return cards['super'][getRandomInt(cards['super'].length)];
+    }
+
+  }
+
 function initializeGame()
 {
   let filename = path.join(appDir, '/engine/cards.json');
@@ -66,25 +86,6 @@ function initializeGame()
     }
   }
 
-  function piocheNewCard()
-  {
-    // pourcentage de piocher des cartes :
-    // 0-49 : carte commune
-    // 50-89 : carte super
-    // 90-99 : carte mega
-    
-    let category = getRandomInt(100);
-
-    if (category < 50) {
-      return cards['common'][getRandomInt(cards['common'].length)];
-    } else if (category >= 90) {
-      return cards['mega'][getRandomInt(cards['mega'].length)];
-    } else {
-      return cards['super'][getRandomInt(cards['super'].length)];
-    }
-
-  }
-
   // Create the matrix
   matrix = [];
   for(let i = 0; i < 5; i++) {
@@ -97,13 +98,13 @@ function initializeGame()
   // Init player cards
   player_cards = [];
   for (let i = 0; i < 5; i++) {
-    player_cards.push(piocheNewCard());
+    player_cards.push(pioche());
   }
 
   // Init opponent cards
   opponent_cards = [];
   for (let i = 0; i < 5; i++) {
-    opponent_cards.push(piocheNewCard());
+    opponent_cards.push(pioche());
   }
 
   player_bibine = 0;
@@ -120,10 +121,11 @@ function removeCard(index, camp) {
   // on vire cette carte et on en tire une autre
   if (camp == 'blue') {
     player_cards.splice(index, 1);
-    player_cards.push(piocheNewCard());
+    let c = pioche();
+    player_cards.push(c);
   } else {
     opponent_cards.splice(index, 1);
-    opponent_cards.push(piocheNewCard());
+    opponent_cards.push(pioche());
   }
 }
 
@@ -530,8 +532,15 @@ function manageRest(req, res, uri)
           let action = JSON.parse(body);
 
           effects = []; // empty effects list
-
-          playCard(action, 'blue');
+          try {
+            playCard(action, 'blue');
+          }
+          catch(error) {
+            console.error(error);
+            // expected output: ReferenceError: nonExistentFunction is not defined
+            // Note - error messages will vary depending on browser
+          }
+          
 
           if (opponent_blocked > 0) {
             opponent_blocked--;
