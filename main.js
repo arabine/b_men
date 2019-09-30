@@ -27,7 +27,7 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const MAX_POINTS = 5; // poins max par emplacement
+const MAX_POINTS = 10; // poins max par emplacement
 
 // Elements communs du jeu
 let grid = [];
@@ -121,8 +121,7 @@ function removeCard(index, camp) {
   // on vire cette carte et on en tire une autre
   if (camp == 'blue') {
     player_cards.splice(index, 1);
-    let c = pioche();
-    player_cards.push(c);
+    player_cards.push(pioche());
   } else {
     opponent_cards.splice(index, 1);
     opponent_cards.push(pioche());
@@ -168,7 +167,7 @@ function triggerPower(power, camp)
     if (power == 0) {
       let e_list = getEmplacements('red');
       clearEmplacements(shuffle(e_list), 3 + getRandomInt(3));
-      effects.push('rain');
+   //   effects.push('rain');
 
     }  else if (power == 1) {
       opponent_blocked = 3;
@@ -179,7 +178,7 @@ function triggerPower(power, camp)
     if (power == 0) {
       let e_list = getEmplacements('blue');
       clearEmplacements(shuffle(e_list), 3 + getRandomInt(3));
-      effects.push('rain');
+   //   effects.push('rain');
 
     } else if (power == 1) {
       player_blocked = 3;
@@ -235,7 +234,6 @@ function playCard(action, camp)
 
   // ===============  CARTE JOUEE SUR LA POUBELLE  ===============
   if (action.dest.type == 'trash') {
-    removeCard(action.card_idx, camp);
 
   // ===============  CARTE JOUEE SUR LE CAMPING  ===============
   } else if (action.dest.type == 'camping') {
@@ -257,7 +255,7 @@ function playCard(action, camp)
           let x = Math.floor(action.dest.index - (9*y));
           matrix[y+1][x+1] = camp;
 
-          can_play = true;
+      
         }
       }
     }
@@ -270,14 +268,9 @@ function playCard(action, camp)
           grid[action.dest.index].state = 0;
           grid[action.dest.index].camp = 'transparent';
         }
-        can_play = true;
+
       }
     }
-
-    if (can_play) {
-      removeCard(action.card_idx, camp);
-    }
-
 
   // ===============  CARTE JOUEE SUR LA BIBINE  ===============
   } else if (action.dest.type == 'bibine') {
@@ -285,20 +278,18 @@ function playCard(action, camp)
     if (c.category == 'bibine') {
       if (camp == 'blue') {
         player_bibine += c.value;
-        if (player_bibine > 10) {
+        if (player_bibine >= 10) {
           player_bibine = 0;
           triggerPower(action.power, 'blue');
         }
         
       } else {
         opponent_bibine += c.value;
-        if (opponent_bibine > 10) {
+        if (opponent_bibine >= 10) {
           opponent_bibine = 0;
           triggerPower(opponent_power, 'red');
         }
       }
-
-      removeCard(action.card_idx, camp);
     }
 
   // ===============  CARTE JOUEE SUR LA BIBINE ADVERSE  ===============
@@ -316,9 +307,11 @@ function playCard(action, camp)
         }
       }
 
-      removeCard(action.card_idx, camp);
+      
     }
   }
+
+  removeCard(action.card_idx, camp);
 
 }
 
@@ -407,9 +400,15 @@ function strategyAttack(action, c)
       action.dest.type = 'adversaire';
       action.valid = true;
     } else if (emplacement >= 0) {
-      action.dest.type = 'camping';
-      action.dest.index = emplacement;
-      action.valid = true;
+
+      let e_list = getEmplacements('blue');
+      let index = conquer(e_list);
+
+      if (index >= 0) {
+        action.dest.type = 'camping';
+        action.dest.index = index;
+        action.valid = true;
+      }
     }
   }
   return action;
@@ -506,6 +505,11 @@ function playComputerIA()
     } 
   }
 
+  // if (!action.valid) {
+  //   action.dest.type = 'trash';
+  //   action.card_idx = 0;
+  // }
+
   playCard(action, camp);
 
   if (player_blocked > 0) {
@@ -531,15 +535,19 @@ function manageRest(req, res, uri)
         try {
           let action = JSON.parse(body);
 
+          for (let i = 0; i < player_cards.length; i++) {
+            console.log("cards: " + i + " title: " + player_cards[i].title);
+          }
+
           effects = []; // empty effects list
-          try {
+  //        try {
             playCard(action, 'blue');
-          }
-          catch(error) {
-            console.error(error);
-            // expected output: ReferenceError: nonExistentFunction is not defined
-            // Note - error messages will vary depending on browser
-          }
+     //     }
+          // catch(error) {
+          //   console.error(error);
+          //   // expected output: ReferenceError: nonExistentFunction is not defined
+          //   // Note - error messages will vary depending on browser
+          // }
           
 
           if (opponent_blocked > 0) {
@@ -565,12 +573,16 @@ function manageRest(req, res, uri)
         //  effects.push('rain');
         //  effects.push('power');
 
+        for (let i = 0; i < player_cards.length; i++) {
+          console.log("cards: " + i + " title: " + player_cards[i].title);
+        }
+
           // On renvoit un objet contectant tout le statut du jeu que le front-end mettra à jour graphiquement
           res.writeHead(200, {'Content-Type': 'application/json'});
           res.end(JSON.stringify({ grid: grid, cards: player_cards, bibine: player_bibine, opponent: opponent_bibine, result: game_result, effects: effects }));
 
         } catch(e) {
-
+          console.error(e);
         }
       }
         
@@ -619,7 +631,7 @@ http.createServer(function(req, res) {
     }); //end path.exists
 }).listen(3000);
 
-let debug = process.env.NODE_ENV !== "production";
+let debug = false; //process.env.NODE_ENV !== "production";
 
 function createWindow () {
   // Cree la fenetre du navigateur.

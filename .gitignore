@@ -10,3 +10,5 @@ dist/
 build-bmen-server/
 
 logs/
+
+bmen-dist/

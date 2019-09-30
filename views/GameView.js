@@ -111,7 +111,7 @@ const powerTemplate =  /*template*/`
 </div>
 `;
 
-const MAX_POINTS = 5;
+const MAX_POINTS = 10;
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -207,7 +207,7 @@ GameView = {
 
 
     this.effects = new Map();
-    this.effects.set('rain', { file: 'sounds/rain.webm', start: this.startRain, stop: this.stopRain });
+  //  this.effects.set('rain', { file: 'sounds/rain.webm', start: this.startRain, stop: this.stopRain });
     this.effects.set('power', { file: this.getRandomZap, start: this.startLightnings, stop: this.stopLightnings });
     this.effects.set('trash', { file: 'sounds/trash.ogg' });
 
@@ -435,7 +435,8 @@ GameView = {
             // On va tester si l'emplacement est valide selon la carte
             if (app.cards[card_id].category == 'attack') {
               if (app.grid[index].camp == 'red') {
-                accept_drop = true;
+                // la carte de l'ennemi doit être adjacente à la notre
+                accept_drop = app.isNextToCard(index, 'blue');
               }
             }
             
