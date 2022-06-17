@@ -12,7 +12,7 @@
   "author": "Anthony Rabine",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^6.0.3",
+    "electron": "^15.5.5",
     "electron-packager": "^14.0.4",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
